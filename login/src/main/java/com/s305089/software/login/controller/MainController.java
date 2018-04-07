@@ -1,8 +1,8 @@
-package com.s305089.software.login.login;
+package com.s305089.software.login.controller;
 
-import com.s305089.software.login.login.dao.ClientService;
-import com.s305089.software.login.login.model.Account;
-import com.s305089.software.login.login.model.Client;
+import com.s305089.software.login.dao.ClientService;
+import com.s305089.software.login.model.Account;
+import com.s305089.software.login.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;

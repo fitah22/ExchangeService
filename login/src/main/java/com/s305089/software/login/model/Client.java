@@ -1,4 +1,4 @@
-package com.s305089.software.login.login.model;
+package com.s305089.software.login.model;
 
 import org.springframework.lang.NonNull;
 

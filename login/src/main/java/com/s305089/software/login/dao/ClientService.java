@@ -1,6 +1,6 @@
-package com.s305089.software.login.login.dao;
+package com.s305089.software.login.dao;
 
-import com.s305089.software.login.login.model.Client;
+import com.s305089.software.login.model.Client;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

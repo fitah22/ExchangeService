@@ -1,12 +1,12 @@
-package com.s305089.software.login.login.model;
+package com.s305089.software.login.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import static com.s305089.software.login.login.model.Currency.BTC;
-import static com.s305089.software.login.login.model.Currency.USD;
+import static com.s305089.software.login.model.Currency.BTC;
+import static com.s305089.software.login.model.Currency.USD;
 
 @Entity
 public class Account {
