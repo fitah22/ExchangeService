@@ -26,6 +26,14 @@ public class Account {
         this.balance = balance;
     }
 
+    public void deposit(long amount) {
+        balance += amount;
+    }
+    public void withdraw(long amount) {
+        balance -= amount;
+    }
+
+
     public static Account newBTCAccount() {
         return new Account(BTC, 0);
     }
@@ -34,4 +42,12 @@ public class Account {
         return new Account(USD, 0);
     }
 
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", currency=" + currency +
+                ", balance=" + balance +
+                '}';
+    }
 }

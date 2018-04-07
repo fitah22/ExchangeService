@@ -17,14 +17,14 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public class UserService implements UserDetailsService {
+public class ClientService implements UserDetailsService {
     private static final Logger log = LogManager.getRootLogger();
 
-    private UserDao dao;
+    private ClientDao dao;
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserDao dao, PasswordEncoder passwordEncoder) {
+    public ClientService(ClientDao dao, PasswordEncoder passwordEncoder) {
         this.dao = dao;
         this.passwordEncoder = passwordEncoder;
     }

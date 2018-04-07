@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-interface UserDao extends CrudRepository<Client, Integer> {
+interface ClientDao extends CrudRepository<Client, Integer> {
     Client findByEmail(String email);
 
 }

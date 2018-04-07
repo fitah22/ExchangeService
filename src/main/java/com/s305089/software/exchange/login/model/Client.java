@@ -3,6 +3,7 @@ package com.s305089.software.exchange.login.model;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,6 +20,7 @@ public class Client {
     @NonNull
     private String password;
     private Date lastLogin;
+    private boolean clamiedReward = false;
     @OneToMany(
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL)
@@ -60,45 +62,15 @@ public class Client {
         this.accounts.add(account);
     }
 
-    public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof Client)) return false;
-        final Client other = (Client) o;
-        if (!other.canEqual((Object) this)) return false;
-        final Object thisemail = this.getEmail();
-        final Object otheremail = other.getEmail();
-        if (thisemail == null ? otheremail != null : !thisemail.equals(otheremail)) return false;
-        final Object thispassword = this.getPassword();
-        final Object otherpassword = other.getPassword();
-        if (thispassword == null ? otherpassword != null : !thispassword.equals(otherpassword)) return false;
-        final Object thislastLogin = this.getLastLogin();
-        final Object otherlastLogin = other.getLastLogin();
-        if (thislastLogin == null ? otherlastLogin != null : !thislastLogin.equals(otherlastLogin)) return false;
-        final Object thiswallets = this.getAccounts();
-        final Object otherwallets = other.getAccounts();
-        if (thiswallets == null ? otherwallets != null : !thiswallets.equals(otherwallets)) return false;
-        return true;
+    public boolean hasHasClamiedReward() {
+        return clamiedReward;
     }
 
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object email = this.getEmail();
-        result = result * PRIME + (email == null ? 43 : email.hashCode());
-        final Object password = this.getPassword();
-        result = result * PRIME + (password == null ? 43 : password.hashCode());
-        final Object lastLogin = this.getLastLogin();
-        result = result * PRIME + (lastLogin == null ? 43 : lastLogin.hashCode());
-        final Object wallets = this.getAccounts();
-        result = result * PRIME + (wallets == null ? 43 : wallets.hashCode());
-        return result;
-    }
-
-    protected boolean canEqual(Object other) {
-        return other instanceof Client;
+    public void setHasClamiedReward(boolean clamiedReward) {
+        this.clamiedReward = clamiedReward;
     }
 
     public String toString() {
-        return "Client(email=" + this.getEmail() + ", password=" + this.getPassword() + ", lastLogin=" + this.getLastLogin() + ", accounts=" + this.getAccounts() + ")";
+        return "Client(email=" + this.getEmail() + ", lastLogin=" + this.getLastLogin() + ", accounts=" + Arrays.deepToString(this.getAccounts().toArray()) + ")";
     }
 }
