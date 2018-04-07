@@ -1,0 +1,11 @@
+package com.s305089.software.login.login.dao;
+
+import com.s305089.software.login.login.model.Client;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+interface ClientDao extends CrudRepository<Client, Integer> {
+    Client findByEmail(String email);
+
+}
