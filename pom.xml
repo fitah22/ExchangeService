@@ -12,6 +12,7 @@
     <modules>
         <module>login</module>
         <module>trade</module>
+        <module>history</module>
     </modules>
     
 </project>
