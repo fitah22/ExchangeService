@@ -14,13 +14,16 @@ public class Order {
     private Integer userID;
     private Double price;
     private Double amount;
+    private Double total;
     private Market market;
     private TransactionType transactionType;
+    private Boolean active = true;
 
     private Order(OrderBuilder builder) {
         this.userID = builder.userID;
         this.price = builder.price;
         this.amount = builder.amount;
+        this.total = price*amount;
         this.market = builder.market;
         this.transactionType = builder.transactionType;
     }
@@ -68,39 +71,31 @@ public class Order {
         return userID;
     }
 
-    public void setUserID(Integer userID) {
-        this.userID = userID;
-    }
-
     public Double getPrice() {
         return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
     }
 
     public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
-        this.amount = amount;
+    public Double getTotal() {
+        return total;
     }
 
     public Market getMarket() {
         return market;
     }
 
-    public void setMarket(Market market) {
-        this.market = market;
-    }
-
     public TransactionType getTransactionType() {
         return transactionType;
     }
 
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

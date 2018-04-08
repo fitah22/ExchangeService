@@ -5,8 +5,10 @@ import com.s305089.software.trade.model.Market;
 import com.s305089.software.trade.model.Order;
 import com.s305089.software.trade.model.TransactionType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
@@ -21,9 +23,9 @@ public class MainController {
     @Autowired
     private OrderDao dao;
 
-    @GetMapping
-    public Order makeOrder(){
-        Order order = new Order.OrderBuilder()
+    @PostMapping
+    public Order makeOrder(@RequestBody Order order){
+        order = new Order.OrderBuilder()
                 .setUserID(1)
                 .setAmount(15.0)
                 .setPrice(6358.0)
@@ -33,7 +35,7 @@ public class MainController {
         return dao.save(order);
     }
 
-    @PostMapping()
+    @GetMapping()
     public List<Market> getMarkets(){
         return Arrays.asList(Market.values());
     }

@@ -38,7 +38,7 @@ public class ClientService implements UserDetailsService {
             log.info("Client not found");
             throw new UsernameNotFoundException("Email not found");
         }
-        log.info("Client with email: {}, is authenticated", client.getEmail());
+        log.info("Client with email: {}, is trying to log in", client.getEmail());
 
         return User.builder()
                 .username(client.getEmail())
