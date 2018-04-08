@@ -16,6 +16,7 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @NonNull
+    @Column(unique=true)
     private String email;
     @NonNull
     private String password;

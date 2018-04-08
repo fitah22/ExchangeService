@@ -39,7 +39,7 @@ public class AuthenticationLogger implements ApplicationListener<AbstractAuthent
     private void logToLogService(LogMessage logMessage) {
         String charset = "UTF-8";
         try {
-            URLConnection connection = new URL(url).openConnection();
+            URLConnection connection = new URL(url + "/user").openConnection();
             connection.setDoOutput(true); // Triggers POST.
             connection.setRequestProperty("Accept-Charset", charset);
             connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
