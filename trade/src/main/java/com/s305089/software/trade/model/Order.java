@@ -1,9 +1,16 @@
 package com.s305089.software.trade.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.lang.NonNull;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Min;
+import java.io.UnsupportedEncodingException;
 
 //To avoid naming conflict with SQL-keyword 'order'
 @Entity(name = "TRADE_ORDER")
@@ -11,61 +18,31 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @NonNull
     private Integer userID;
+    @NonNull
+    @Min(value = 0)
     private Double price;
+    @NonNull
+    @Min(value = 0)
     private Double amount;
     private Double total;
     private Market market;
     private TransactionType transactionType;
     private Boolean active = true;
 
-    private Order(OrderBuilder builder) {
-        this.userID = builder.userID;
-        this.price = builder.price;
-        this.amount = builder.amount;
-        this.total = price*amount;
-        this.market = builder.market;
-        this.transactionType = builder.transactionType;
+    private Order() {
     }
 
-    public static class OrderBuilder{
-        private Integer userID;
-        private Double price;
-        private Double amount;
-        private Market market;
-        private TransactionType transactionType;
-
-        public Order build()
-        {
-            return new Order(this);
-        }
-
-        public OrderBuilder setUserID(Integer userID) {
-            this.userID = userID;
-            return this;
-        }
-
-        public OrderBuilder setPrice(Double price) {
-            this.price = price;
-            return this;
-        }
-
-        public OrderBuilder setAmount(Double amount) {
-            this.amount = amount;
-            return this;
-        }
-
-        public OrderBuilder setMarket(Market market) {
-            this.market = market;
-            return this;
-        }
-
-        public OrderBuilder setTransactionType(TransactionType transactionType) {
-            this.transactionType = transactionType;
-            return this;
-        }
+    public Order(Integer userID, Double price, Double amount, Market market, TransactionType transactionType) {
+        this.userID = userID;
+        this.price = price;
+        this.amount = amount;
+        this.total = price * amount;
+        this.market = market;
+        this.transactionType = transactionType;
+        this.active = true;
     }
-
 
     public Integer getUserID() {
         return userID;
@@ -98,4 +75,9 @@ public class Order {
     public void setActive(Boolean active) {
         this.active = active;
     }
+
+    public void calculateTotal() {
+        this.total = price * amount;
+    }
+
 }

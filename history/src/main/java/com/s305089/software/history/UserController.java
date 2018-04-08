@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-public class MainController {
+public class UserController {
 
     @Autowired
     UserEventDao userEventDao;
