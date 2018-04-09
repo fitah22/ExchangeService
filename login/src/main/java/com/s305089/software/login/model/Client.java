@@ -1,27 +1,28 @@
 package com.s305089.software.login.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="CLIENT")
+@Table(name = "CLIENT")
 public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @NonNull
-    @Column(unique=true)
+    @Column(unique = true)
     private String email;
     @NonNull
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+    @NonNull
     private String address;
-    private Date lastLogin;
     private boolean clamiedReward = false;
     @OneToMany(
             fetch = FetchType.EAGER,
@@ -38,10 +39,6 @@ public class Client {
 
     public String getPassword() {
         return this.password;
-    }
-
-    public Date getLastLogin() {
-        return this.lastLogin;
     }
 
     public Set<Account> getAccounts() {
@@ -64,10 +61,6 @@ public class Client {
         this.address = address;
     }
 
-    public void setLastLogin(Date lastLogin) {
-        this.lastLogin = lastLogin;
-    }
-
     public void addAccount(Account account) {
         this.accounts.add(account);
     }
@@ -81,6 +74,6 @@ public class Client {
     }
 
     public String toString() {
-        return "Client(email=" + this.getEmail() + ", lastLogin=" + this.getLastLogin() + ", accounts=" + Arrays.deepToString(this.getAccounts().toArray()) + ")";
+        return "Client(email=" + this.getEmail() + ", accounts=" + Arrays.deepToString(this.getAccounts().toArray()) + ")";
     }
 }
