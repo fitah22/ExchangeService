@@ -6,7 +6,9 @@ import com.s305089.software.login.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.Principal;
@@ -26,17 +28,6 @@ public class MainController {
         client.addAccount(Account.newUSDAccount());
         service.save(client);
         return "index";
-    }
-
-    @RequestMapping("/claim")
-    public String claimMoney(Principal principal){
-        Client client = service.findByEmail(principal.getName());
-        if (client != null && !client.hasHasClamiedReward()) {
-            client.getAccounts().forEach(account -> account.deposit(100));
-            client.setHasClamiedReward(true);
-            service.save(client);
-        }
-        return "redirect:";
     }
 
     @RequestMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -59,15 +59,9 @@ public class ClientService implements UserDetailsService {
         return dao.save(entity);
     }
 
-
-    public <S extends Client> Iterable<S> saveAll(Iterable<S> entities) {
-        entities.forEach(entity -> {
-            String password = passwordEncoder.encode(entity.getPassword());
-            entity.setPassword(password);
-        });
-        return dao.saveAll(entities);
+    public <S extends Client> S saveWithoutPassword(S entity) {
+        return dao.save(entity);
     }
-
 
     public Optional<Client> findById(Integer integer) {
         return dao.findById(integer);
@@ -82,12 +76,6 @@ public class ClientService implements UserDetailsService {
     public Iterable<Client> findAll() {
         return dao.findAll();
     }
-
-
-    public Iterable<Client> findAllById(Iterable<Integer> integers) {
-        return dao.findAllById(integers);
-    }
-
 
     public long count() {
         return dao.count();

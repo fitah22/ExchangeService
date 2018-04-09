@@ -31,7 +31,9 @@ public class AuthenticationLogger implements ApplicationListener<AbstractAuthent
         }
         Authentication authentication = authenticationEvent.getAuthentication();
 
-        logToLogService(new LogMessage(authentication.getName(), authentication.isAuthenticated()));
+        new Thread(() ->
+                logToLogService(new LogMessage(authentication.getName(), authentication.isAuthenticated()))
+        ).start();
 
     }
 
