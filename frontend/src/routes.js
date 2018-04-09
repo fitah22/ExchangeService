@@ -2,7 +2,7 @@ import * as React from "react";
 import {Route} from "react-router-dom";
 import {Layout} from "./components/Layout";
 import {Home} from "./components/Home";
-import {LoginService} from "./components/LoginService";
+import {LoginService} from "./login/LoginService";
 import {TradeEngine} from "./components/TradeEngine";
 import {History} from "./components/History";
 
