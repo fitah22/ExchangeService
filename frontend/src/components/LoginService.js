@@ -1,5 +1,7 @@
 import * as React from 'react';
 
-export default class LoginService extends React.Component  {
-
+export class LoginService extends React.Component  {
+    render(){
+        return <p>Hello</p>
+    }
 }

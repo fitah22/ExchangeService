@@ -1,5 +1,9 @@
 import * as React from 'react';
 
-export default class History extends React.Component {
+export class History extends React.Component {
+
+    render(){
+        return <p>Hello</p>
+    }
 
 }
