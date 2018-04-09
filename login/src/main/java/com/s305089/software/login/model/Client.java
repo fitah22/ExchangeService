@@ -74,6 +74,6 @@ public class Client {
     }
 
     public String toString() {
-        return "Client(email=" + this.getEmail() + ", accounts=" + Arrays.deepToString(this.getAccounts().toArray()) + ")";
+        return "Client(email=" + this.getEmail() + ", address" + this.getAddress() + ", accounts=" + Arrays.deepToString(this.getAccounts().toArray()) + ")";
     }
 }

@@ -15,7 +15,7 @@ export class LoginService extends React.Component {
                 </div>
                 <div>
                     Signup:
-                    <Signup/>
+                    <Signup />
                 </div>
             </div>
         )
