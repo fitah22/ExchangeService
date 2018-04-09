@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 //User profile service
 public class ClientController {
