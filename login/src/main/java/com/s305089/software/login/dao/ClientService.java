@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public class ClientService implements UserDetailsService {
+public class ClientService {
     private static final Logger log = LogManager.getRootLogger();
 
     private ClientDao dao;
@@ -29,23 +29,7 @@ public class ClientService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    //Used for security.
-    @Override
-    @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Client client = dao.findByEmail(email);
-        if (client == null) {
-            log.info("Client not found");
-            throw new UsernameNotFoundException("Email not found");
-        }
-        log.info("Client with email: {}, is trying to log in", client.getEmail());
 
-        return User.builder()
-                .username(client.getEmail())
-                .password(client.getPassword())
-                .authorities(new SimpleGrantedAuthority("ROLE_USER"))
-                .build();
-    }
 
 
     public Client findByEmail(String email) {

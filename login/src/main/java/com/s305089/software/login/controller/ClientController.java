@@ -18,11 +18,6 @@ public class ClientController {
     @Autowired
     ClientService service;
 
-    @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public HttpStatus signup(Client client, HttpServletRequest request, HttpServletResponse response){
-        service.save(client);
-        return HttpStatus.OK;
-    }
 
     @GetMapping("/claim")
     public String claimMoney(Principal principal){

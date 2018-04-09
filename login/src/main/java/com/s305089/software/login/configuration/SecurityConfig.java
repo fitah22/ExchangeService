@@ -15,8 +15,12 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final UserDetailsService userDetailsServiceImpl;
+
     @Autowired
-    UserDetailsService clientService;
+    public SecurityConfig(UserDetailsService userDetailsServiceImpl) {
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -25,21 +29,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/signup").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/login").permitAll()
+                .httpBasic()
                 .and()
-                .logout()
-                .logoutRequestMatcher( new AntPathRequestMatcher( "/logout", "GET" ) )
-                .permitAll();
-                //.and()
-                //.httpBasic()
-                //.and()
-                //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(clientService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsServiceImpl).passwordEncoder(passwordEncoder());
     }
 
    @Bean
