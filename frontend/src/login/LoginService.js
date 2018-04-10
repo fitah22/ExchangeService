@@ -23,11 +23,11 @@ export class LoginService extends React.Component {
                 <div>
                     <div>
                         Login:
-                        <Login updateToken={setAuthParams}/>
+                        <Login setParams={setAuthParams}/>
                     </div>
                     <div>
                         Signup:
-                        <Signup/>
+                        <Signup setParams={setAuthParams}/>
                     </div>
                 </div>
             )

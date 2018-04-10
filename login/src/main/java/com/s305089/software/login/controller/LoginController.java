@@ -27,7 +27,8 @@ public class LoginController {
     }
 
     @PostMapping(value = "/signup")
-    public ResponseEntity<Client> signup(@RequestBody Client newClient) {
+    public ResponseEntity<Client> signup(@RequestBody String s) {
+        Client newClient = new Client();
         if(newClient.getEmail() == null || newClient.getPassword() == null || newClient.getAddress() == null) {
             log.info("New signup is not accepted: {}", newClient);
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);

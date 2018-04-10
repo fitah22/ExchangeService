@@ -38,7 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .csrf().disable();
+                .csrf().disable()
+                .cors().disable();
     }
 
     @Autowired

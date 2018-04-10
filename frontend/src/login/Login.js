@@ -12,7 +12,7 @@ export class Login extends React.Component {
 
     constructor(props){
         super(props);
-        this.updateToken = this.props.updateToken;
+        this.setParams = this.props.setParams;
     }
 
     handleSubmit = (values, e, formapi) => {
@@ -23,7 +23,7 @@ export class Login extends React.Component {
             }
         };
         axios.get(loginURL + "login", config).then(() => {
-            this.updateToken(values.email, values.password);
+            this.setParams(values.email, values.password);
         }).catch(() => {
             formapi.setError("email", "Email already in use");
         });

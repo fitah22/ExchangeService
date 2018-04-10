@@ -10,6 +10,12 @@ const validate = value => ({
 
 export class Signup extends React.Component {
 
+    constructor(props){
+        super(props);
+        this.setParams = this.props.setParams;
+    }
+
+
     handleSubmit = (values, e, formapi) => {
         const config = {
             auth: {
@@ -18,9 +24,8 @@ export class Signup extends React.Component {
             }
         };
 
-        axios().post(loginURL+"signup", values, config).then(response => {
-            let token = btoa(values.email + ":" + values.password);
-            this.props.onSubmit(token);
+        axios.post(loginURL+"signup", values, config).then(response => {
+            this.setParams(values.email, values.password);
         }).catch(error => {
             formapi.setError("email","Email already in use");
         });
