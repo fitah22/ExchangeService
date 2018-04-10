@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Form, Text, Checkbox} from 'react-form';
-import {loginInstance, setAuthToken} from "../axiosInstances";
+import axios from "axios";
+import {loginURL } from "../ServiceURLS";
 
 
 const validate = value => ({
@@ -10,9 +11,16 @@ const validate = value => ({
 export class Signup extends React.Component {
 
     handleSubmit = (values, e, formapi) => {
-        loginInstance.post("signup", values).then(response => {
+        const config = {
+            auth: {
+                username: values.email,
+                password: values.password
+            }
+        };
+
+        axios().post(loginURL+"signup", values, config).then(response => {
             let token = btoa(values.email + ":" + values.password);
-            setAuthToken(token);
+            this.props.onSubmit(token);
         }).catch(error => {
             formapi.setError("email","Email already in use");
         });
