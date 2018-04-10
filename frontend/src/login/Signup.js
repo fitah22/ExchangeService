@@ -11,7 +11,7 @@ export class Signup extends React.Component {
 
     handleSubmit = (values, e, formapi) => {
         loginInstance.post("signup", values).then(response => {
-            console.log(values)
+            console.log(values);
             let token = btoa(values.email + ":" + values.password);
             console.log("basic token: " + token);
         }).catch(error => {
