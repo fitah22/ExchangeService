@@ -17,10 +17,12 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsServiceImpl;
+    private final CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint;
 
     @Autowired
-    public SecurityConfig(UserDetailsService userDetailsServiceImpl) {
+    public SecurityConfig(UserDetailsService userDetailsServiceImpl, CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint) {
         this.userDetailsServiceImpl = userDetailsServiceImpl;
+        this.customBasicAuthenticationEntryPoint = customBasicAuthenticationEntryPoint;
     }
 
     @Override
@@ -31,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/signup").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .httpBasic()
+                .httpBasic().authenticationEntryPoint(customBasicAuthenticationEntryPoint)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

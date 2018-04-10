@@ -21,11 +21,6 @@ import java.net.URLConnection;
 @Component
 public class AuthenticationLogger implements ApplicationListener<AbstractAuthenticationEvent> {
 
-    @Value("${logginservice.url}")
-    private String url;
-
-    private static final Logger log = LogManager.getRootLogger();
-
     @Override
     public void onApplicationEvent(AbstractAuthenticationEvent authenticationEvent) {
         if (authenticationEvent instanceof InteractiveAuthenticationSuccessEvent) {
@@ -36,29 +31,13 @@ public class AuthenticationLogger implements ApplicationListener<AbstractAuthent
 
         //https://stackoverflow.com/a/43982356/
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        Loggable message = new APIMessage(authentication.getName(), authentication.isAuthenticated(), request.getServletPath());
+
         new Thread(() ->
-                logToLogService(new LogMessage(authentication.getName(), authentication.isAuthenticated(), request.getServletPath()))
+                HistoryConnector.logToLogService(message, "/user")
         ).start();
 
     }
 
-
-    private void logToLogService(LogMessage logMessage) {
-        String charset = "UTF-8";
-        try {
-            URLConnection connection = new URL(url + "/user").openConnection();
-            connection.setDoOutput(true); // Triggers POST.
-            connection.setRequestProperty("Accept-Charset", charset);
-            connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
-
-            try (OutputStream output = connection.getOutputStream()) {
-                output.write(logMessage.getMessageUTF8());
-            }
-
-            InputStream response = connection.getInputStream();
-        } catch (IOException e) {
-            log.error("Could not connect to logging server");
-        }
-    }
 
 }

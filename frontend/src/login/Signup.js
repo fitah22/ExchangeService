@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Form, Text, Checkbox} from 'react-form';
-import {loginInstance} from "../axiosInstances";
+import {loginInstance, setAuthToken} from "../axiosInstances";
 
 
 const validate = value => ({
@@ -11,9 +11,8 @@ export class Signup extends React.Component {
 
     handleSubmit = (values, e, formapi) => {
         loginInstance.post("signup", values).then(response => {
-            console.log(values);
             let token = btoa(values.email + ":" + values.password);
-            console.log("basic token: " + token);
+            setAuthToken(token);
         }).catch(error => {
             formapi.setError("email","Email already in use");
         });

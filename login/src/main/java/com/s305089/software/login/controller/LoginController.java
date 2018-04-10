@@ -21,6 +21,10 @@ public class LoginController {
         this.service = service;
     }
 
+    @GetMapping(value = "/login")
+    public void login(){
+        //Dummy method to check if username and password is correct.
+    }
 
     @PostMapping(value = "/signup")
     public ResponseEntity<Client> signup(@RequestBody Client newClient) {

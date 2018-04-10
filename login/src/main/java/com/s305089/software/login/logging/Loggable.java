@@ -6,31 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.UnsupportedEncodingException;
 
-public class LogMessage {
-    private String username;
-    private Boolean loginSuccess;
-    private String apiEndpoint;
-
-    public LogMessage(String username, boolean authenticated, String apiEndpoint) {
-        this.username = username;
-        this.loginSuccess = authenticated;
-        this.apiEndpoint = apiEndpoint;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public boolean isLoginSuccess() {
-        return loginSuccess;
-    }
-
-    public String getApiEndpoint() {
-        return apiEndpoint;
-    }
-
+public interface Loggable {
     @JsonIgnore
-    byte[] getMessageUTF8() {
+    default byte[] getMessageUTF8() {
         try {
             ObjectMapper mapper = new ObjectMapper();
             String s = mapper.writeValueAsString(this);

@@ -1,20 +1,19 @@
 package com.s305089.software.history.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-public class UserEvent {
+public class APIEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @NonNull
     private String username;
     @NonNull
-    private Boolean loginSuccess;
+    private Boolean authenticated;
     private Date timestamp;
     private String apiEndpoint;
 
@@ -27,12 +26,12 @@ public class UserEvent {
         this.username = username;
     }
 
-    public Boolean getLoginSuccess() {
-        return loginSuccess;
+    public Boolean getAuthenticated() {
+        return authenticated;
     }
 
-    public void setLoginSuccess(Boolean loginSuccess) {
-        this.loginSuccess = loginSuccess;
+    public void setAuthenticated(Boolean authenticated) {
+        this.authenticated = authenticated;
     }
 
     public Date getTimestamp() {

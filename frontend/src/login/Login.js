@@ -1,15 +1,23 @@
 import * as React from 'react';
 import { Form, Text, Checkbox } from 'react-form';
+import {loginInstance, setAuthToken} from "../axiosInstances";
 
 
 
 const validate = value => ({
-    error: !value || !/Hello World/.test(value) ? "Input must contain 'Hello World'" : null,
-    warning: !value || !/^Hello World$/.test(value) ? "Input should equal just 'Hello World'" : null,
-    success: value && /Hello World/.test(value) ? "Thanks for entering 'Hello World'!" : null
-})
+    error: !value ? "Input must contain 'Hello World'" : null
+});
 
 export class Login extends React.Component  {
+
+    handleSubmit = (values, e, formapi) => {
+        loginInstance.post("login", values).then(response => {
+            let token = btoa(values.email + ":" + values.password);
+            setAuthToken(token);
+        }).catch(error => {
+            formapi.setError("email","Email already in use");
+        });
+    };
 
     render(){
         return (
