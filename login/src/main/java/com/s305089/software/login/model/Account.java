@@ -1,5 +1,7 @@
 package com.s305089.software.login.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,7 +15,9 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @JsonProperty
     private Currency currency;
+    @JsonProperty
     private long balance;
 
     private Account() {
@@ -31,13 +35,12 @@ public class Account {
         balance -= amount;
     }
 
-
-    public static Account newBTCAccount() {
-        return new Account(BTC, 0);
+    public Currency getCurrency() {
+        return currency;
     }
 
-    public static Account newUSDAccount() {
-        return new Account(USD, 0);
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 
     @Override
@@ -47,5 +50,14 @@ public class Account {
                 ", currency=" + currency +
                 ", balance=" + balance +
                 '}';
+    }
+
+
+    public static Account newBTCAccount() {
+        return new Account(BTC, 0);
+    }
+
+    public static Account newUSDAccount() {
+        return new Account(USD, 0);
     }
 }

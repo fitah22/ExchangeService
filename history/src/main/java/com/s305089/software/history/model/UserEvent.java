@@ -16,6 +16,7 @@ public class UserEvent {
     @NonNull
     private Boolean loginSuccess;
     private Date timestamp;
+    private String apiEndpoint;
 
 
     public String getUsername() {
@@ -40,5 +41,13 @@ public class UserEvent {
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getApiEndpoint() {
+        return apiEndpoint;
+    }
+
+    public void setApiEndpoint(String apiEndpoint) {
+        this.apiEndpoint = apiEndpoint;
     }
 }

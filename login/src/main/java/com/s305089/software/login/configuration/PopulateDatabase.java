@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PopulateDatabase {
-    private static final Logger log = LogManager.getRootLogger();
+    private static final Logger log = LogManager.getLogger();
 
     private final ClientService service;
 

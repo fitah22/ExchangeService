@@ -32,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             log.info("Client not found");
             throw new UsernameNotFoundException("Email not found");
         }
-        log.info("Client with email: {}, is trying to log in", client.getEmail());
+        log.info("Client with email: '{}', is being authenticated", client.getEmail());
 
         return User.builder()
                 .username(client.getEmail())

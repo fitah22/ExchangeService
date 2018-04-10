@@ -8,7 +8,10 @@ import org.springframework.security.authentication.event.AbstractAuthenticationE
 import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,8 +34,10 @@ public class AuthenticationLogger implements ApplicationListener<AbstractAuthent
         }
         Authentication authentication = authenticationEvent.getAuthentication();
 
+        //https://stackoverflow.com/a/43982356/
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         new Thread(() ->
-                logToLogService(new LogMessage(authentication.getName(), authentication.isAuthenticated()))
+                logToLogService(new LogMessage(authentication.getName(), authentication.isAuthenticated(), request.getServletPath()))
         ).start();
 
     }

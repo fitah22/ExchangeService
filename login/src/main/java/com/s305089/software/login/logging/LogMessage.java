@@ -9,10 +9,12 @@ import java.io.UnsupportedEncodingException;
 public class LogMessage {
     private String username;
     private Boolean loginSuccess;
+    private String apiEndpoint;
 
-    public LogMessage(String username, boolean authenticated) {
+    public LogMessage(String username, boolean authenticated, String apiEndpoint) {
         this.username = username;
         this.loginSuccess = authenticated;
+        this.apiEndpoint = apiEndpoint;
     }
 
     public String getUsername() {
@@ -23,8 +25,12 @@ public class LogMessage {
         return loginSuccess;
     }
 
+    public String getApiEndpoint() {
+        return apiEndpoint;
+    }
+
     @JsonIgnore
-    public byte[] getMessageUTF8() {
+    byte[] getMessageUTF8() {
         try {
             ObjectMapper mapper = new ObjectMapper();
             String s = mapper.writeValueAsString(this);

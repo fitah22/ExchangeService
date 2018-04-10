@@ -23,6 +23,7 @@ public class Client {
     private String password;
     @NonNull
     private String address;
+    @JsonProperty
     private boolean clamiedReward = false;
     @OneToMany(
             fetch = FetchType.EAGER,
