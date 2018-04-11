@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Form, Text} from 'react-form';
+import { Button, Form as FormStyled, FormGroup, Label } from 'reactstrap';
 import axios from "axios";
 import {loginURL} from "../ServiceURLS";
 
@@ -33,18 +34,23 @@ export class Login extends React.Component {
     };
 
     render() {
+        const textStyle = {className: "form-control"};
         return (
             <Form onSubmit={this.handleSubmit}>
                 {
                     (formApi) => (
-                        <form onSubmit={formApi.submitForm}>
-                            <label htmlFor="email">Email</label>
-                            <Text field="email" placeholder="Email" validate={validate}/>
+                        <FormStyled onSubmit={formApi.submitForm}>
+                            <FormGroup>
+                            <Label htmlFor="email">Email</Label>
+                            <Text field="email" placeholder="Email" validate={validate} required {...textStyle}/>
+                            </FormGroup>
+                            <FormGroup>
                             <label htmlFor="password">Password</label>
-                            <Text field="password" type="password"/>
-                            <button type="submit" className={"btn btn-md"}>Login</button>
+                            <Text field="password" type="password" placeholder="Password" required {...textStyle}/>
+                            </FormGroup>
+                            <Button color="primary" type="submit">Login</Button>
                             <div>{JSON.stringify(formApi.errors)}</div>
-                        </form>
+                        </FormStyled>
                     )
                 }
             </Form>

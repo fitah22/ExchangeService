@@ -44,9 +44,7 @@ export class Layout extends React.Component {
 
             <div className='container-fluid'>
                 <div className='row'>
-                    <div className='col-md-12'>
                         {this.props.children}
-                    </div>
                 </div>
             </div>
         </TokenContext.Provider>;

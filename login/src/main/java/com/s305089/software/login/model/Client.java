@@ -24,7 +24,7 @@ public class Client {
     @NonNull
     private String address;
     @JsonProperty
-    private boolean clamiedReward = false;
+    private boolean claimedReward = false;
     @OneToMany(
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL)
@@ -67,11 +67,11 @@ public class Client {
     }
 
     public boolean hasHasClamiedReward() {
-        return clamiedReward;
+        return claimedReward;
     }
 
     public void setHasClamiedReward(boolean clamiedReward) {
-        this.clamiedReward = clamiedReward;
+        this.claimedReward = clamiedReward;
     }
 
     public String toString() {
