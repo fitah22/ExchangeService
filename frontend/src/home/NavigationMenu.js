@@ -26,7 +26,7 @@ export class NavigationMenu extends React.Component {
         if(isAuth){
             return (<React.Fragment>
                 <li>
-                    <NavLink to={ '/login' } activeClassName='active'>
+                    <NavLink to={ '/user' } activeClassName='active'>
                         User
                     </NavLink>
                 </li>
@@ -45,7 +45,7 @@ export class NavigationMenu extends React.Component {
 
         return (<React.Fragment>
             <li>
-                <NavLink to={ '/login' } activeClassName='active'>
+                <NavLink to={ '/user' } activeClassName='active'>
                     Log in or register
                 </NavLink>
             </li>
