@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Form, Text} from 'react-form';
+import {Form} from 'react-form';
 import {Button, Form as FormStyled, FormGroup, Label, Input, InputGroup, InputGroupAddon, Col} from 'reactstrap';
 import axios from "axios";
 import {tradeURL} from "../ServiceURLS";
@@ -17,11 +17,11 @@ export class Transaction extends React.Component {
         };
     }
 
-    componentDidMount(){
+    componentDidMount() {
         const {currency, unit} = this.props;
         const apiUrl = `https://min-api.cryptocompare.com/data/price?fsym=${currency}&tsyms=${unit}`;
         axios.get(apiUrl).then(response => {
-            if(response.status === 200){
+            if (response.status === 200) {
                 this.setState({
                     currentMarketPrice: response.data[unit]
                 });
@@ -40,9 +40,16 @@ export class Transaction extends React.Component {
         });
     };
 
+    handleNumberChange(event) {
+        debugger;
+        const {value, name} = event.currentTarget;
+        this.setState({
+
+        });
+    }
+
     render() {
         const {type, currency, unit} = this.props;
-        const textStyle = {className: "form-control"};
         return (
             <Form onSubmit={this.handleSubmit}>
                 {
@@ -53,7 +60,8 @@ export class Transaction extends React.Component {
                                 <Label htmlFor="price" sm={2}>Price:</Label>
                                 <Col sm={10}>
                                     <InputGroup>
-                                        <Input defaultValue={this.state.price} placeholder="Price" min="0" type="number" field="price" step="0.01"/>
+                                        <Input defaultValue={this.state.price} placeholder="Price" min="0" type="number"
+                                               name="price" field="price" step="0.01" onChange={(event) => this.handleNumberChange(event)}/>
                                         <InputGroupAddon addonType="append">{unit}</InputGroupAddon>
                                     </InputGroup>
                                 </Col>
@@ -62,24 +70,24 @@ export class Transaction extends React.Component {
 
                                 <Label htmlFor="amount" sm={2}>Amount:</Label>
                                 <Col sm={10}>
-                                <InputGroup>
-                                    <Input placeholder="Amount" type="number" min="0" step="0.01"/>
-                                    <InputGroupAddon addonType="append">{currency}</InputGroupAddon>
-                                </InputGroup>
+                                    <InputGroup>
+                                        <Input placeholder="Amount" type="number" min="0" name="amount" field="amount" step="0.01" onChange={(event) => this.handleNumberChange(event)}/>
+                                        <InputGroupAddon addonType="append">{currency}</InputGroupAddon>
+                                    </InputGroup>
                                 </Col>
                             </FormGroup>
                             <FormGroup row>
                                 <Label htmlFor="total" sm={2}>Total: </Label>
                                 <Col sm={10}>
-                                <InputGroup>
-                                    <Input defaultValue={this.state.total} type="number" field="total" step="1"/>
-                                    <InputGroupAddon addonType="append">{unit}</InputGroupAddon>
-                                </InputGroup>
+                                    <InputGroup>
+                                        <Input value={this.state.total} type="number" field="total" name="total" readOnly/>
+                                        <InputGroupAddon addonType="append">{unit}</InputGroupAddon>
+                                    </InputGroup>
                                 </Col>
                             </FormGroup>
                             <Input hidden type="text" value={type} readOnly/>
-                            <Button color="primary" type="submit" block>{type} {currency}</Button>
                             <div>{JSON.stringify(formApi.errors)}</div>
+                            <Button color="primary" type="submit" block>{type} {currency}</Button>
                         </FormStyled>
                     )
                 }

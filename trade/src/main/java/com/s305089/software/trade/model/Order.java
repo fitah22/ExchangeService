@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Min;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.util.Date;
 
 //To avoid naming conflict with SQL-keyword 'order'
 @Entity(name = "TRADE_ORDER")
@@ -19,44 +21,46 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @NonNull
-    private Integer userID;
+    private String userID;
     @NonNull
     @Min(value = 0)
-    private Double price;
+    private BigDecimal price;
     @NonNull
     @Min(value = 0)
-    private Double amount;
-    private Double total;
+    private BigDecimal amount;
+    private BigDecimal total;
     private Market market;
     private TransactionType transactionType;
     private Boolean active = true;
+    private Date timestamp = new Date();
 
     private Order() {
     }
 
-    public Order(Integer userID, Double price, Double amount, Market market, TransactionType transactionType) {
+    public Order(String userID, Double price, Double amount, Market market, TransactionType transactionType) {
         this.userID = userID;
-        this.price = price;
-        this.amount = amount;
-        this.total = price * amount;
+        this.price = new BigDecimal(price);
+        this.amount = new BigDecimal(amount);
+
+        this.total = this.price.multiply(this.amount);
         this.market = market;
         this.transactionType = transactionType;
         this.active = true;
     }
 
-    public Integer getUserID() {
+    public String getUserID() {
         return userID;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public Double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public Double getTotal() {
+    public BigDecimal getTotal() {
         return total;
     }
 
@@ -76,8 +80,16 @@ public class Order {
         this.active = active;
     }
 
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
     public void calculateTotal() {
-        this.total = price * amount;
+        this.total = price.multiply(amount);
     }
 
 }

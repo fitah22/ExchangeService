@@ -17,21 +17,23 @@ public class HistoryConnector {
     private static String url;
 
     public static void logToLogService(Loggable logMessage, String loggingPath) {
-        String charset = "UTF-8";
-        try {
-            URLConnection connection = new URL(url + loggingPath).openConnection();
-            connection.setDoOutput(true); // Triggers POST.
-            connection.setRequestProperty("Accept-Charset", charset);
-            connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
+        new Thread(() -> {
+            String charset = "UTF-8";
+            try {
+                URLConnection connection = new URL(url + loggingPath).openConnection();
+                connection.setDoOutput(true); // Triggers POST.
+                connection.setRequestProperty("Accept-Charset", charset);
+                connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
 
-            try (OutputStream output = connection.getOutputStream()) {
-                output.write(logMessage.getMessageUTF8());
+                try (OutputStream output = connection.getOutputStream()) {
+                    output.write(logMessage.getMessageUTF8());
+                }
+
+                log.info("Log message sent.");
+            } catch (IOException e) {
+                log.error("Could not connect to logging server");
             }
-
-            log.info("Log message sent.");
-        } catch (IOException e) {
-            log.error("Could not connect to logging server");
-        }
+        }).start();
     }
 
     @Value("${logginservice.url}")

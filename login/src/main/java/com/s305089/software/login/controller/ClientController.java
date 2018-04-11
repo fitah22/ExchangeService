@@ -1,9 +1,9 @@
 package com.s305089.software.login.controller;
 
 import com.s305089.software.login.dao.ClientService;
-import com.s305089.software.login.model.Account;
-import com.s305089.software.login.model.Client;
-import com.s305089.software.login.model.Currency;
+import com.s305089.software.login.logging.ErrorLog;
+import com.s305089.software.login.logging.HistoryConnector;
+import com.s305089.software.login.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -80,4 +80,46 @@ public class ClientController {
         }
         return HttpStatus.NOT_FOUND;
     }
+
+    @PostMapping(value = "/user/buy")
+    public ResponseEntity withdrawIfHSufficientFunds(@RequestBody ClientOrderDTO clientOrderDTO, Principal principal) {
+        if (principal.getName().equals("tradeuser@s305089.com")) {
+
+            Client client = service.findByEmail(clientOrderDTO.getEmail());
+            if (client != null) {
+                Optional<Account> accountOpt = client.getAccounts().stream().filter(a -> a.getCurrency().equals(clientOrderDTO.getCurrency())).findFirst();
+                if (accountOpt.isPresent()) {
+                    Account account = accountOpt.get();
+                    try {
+                        account.withdraw(clientOrderDTO.getAmount());
+                    } catch (IllegalAccountTransactionException e) {
+                        HistoryConnector.logToLogService(new ErrorLog(client.getEmail(), e.getMessage()), "/error");
+                        e.printStackTrace();
+                    }
+                    return new ResponseEntity(HttpStatus.OK);
+                }
+            }
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity(HttpStatus.FORBIDDEN);
+    }
+
+    @PostMapping(value = "/user/sell")
+    public ResponseEntity depositBecauseOfSell(@RequestBody ClientOrderDTO clientOrderDTO, Principal principal) {
+        if (principal.getName().equals("tradeuser@s305089.com")) {
+
+            Client client = service.findByEmail(clientOrderDTO.getEmail());
+            if (client != null) {
+                Optional<Account> accountOpt = client.getAccounts().stream().filter(a -> a.getCurrency().equals(clientOrderDTO.getCurrency())).findFirst();
+                Account account = accountOpt.orElseGet(() -> Account.newFromCurrency(clientOrderDTO.getCurrency()));
+                account.deposit(clientOrderDTO.getAmount());
+                return new ResponseEntity(HttpStatus.OK);
+            }
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity(HttpStatus.FORBIDDEN);
+    }
+
 }

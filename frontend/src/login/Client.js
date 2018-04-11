@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {Account} from "./Account";
-import {Button, Alert} from 'reactstrap';
 
 export class Client extends React.Component {
 
