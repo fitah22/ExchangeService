@@ -15,7 +15,6 @@ export class Client extends React.Component {
         const {data} = this.props;
 
         if (data) {
-            let claimedRewardText = data.claimedReward ? "Yes" : "No";
             return (
                 <div>
                     <h3>Welcome</h3>

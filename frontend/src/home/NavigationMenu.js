@@ -15,23 +15,43 @@ export class NavigationMenu extends React.Component {
                                 Home
                             </NavLink>
                         </li>
-                        <li>
-                            <NavLink to={ '/login' } activeClassName='active'>
-                                Login
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink to={ '/trade' } activeClassName='active'>
-                                Trade
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink to={ '/history' } activeClassName='active'>
-                                History
-                            </NavLink>
-                        </li>
+                        {this.renderLinks()}
                     </ul>
                 </div>
         </nav>;
     }
+
+    renderLinks() {
+        const {isAuth} = this.props;
+        if(isAuth){
+            return (<React.Fragment>
+                <li>
+                    <NavLink to={ '/login' } activeClassName='active'>
+                        User
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to={ '/trade' } activeClassName='active'>
+                        Trade
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to={ '/history' } activeClassName='active'>
+                        History
+                    </NavLink>
+                </li>
+            </React.Fragment>)
+        }
+
+        return (<React.Fragment>
+            <li>
+                <NavLink to={ '/login' } activeClassName='active'>
+                    Log in or register
+                </NavLink>
+            </li>
+        </React.Fragment>)
+
+
+    }
+
 }

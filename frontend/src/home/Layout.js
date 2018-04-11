@@ -40,7 +40,7 @@ export class Layout extends React.Component {
 
     render() {
         return <TokenContext.Provider value={this.state}>
-            <NavigationMenu/>
+            <NavigationMenu isAuth={this.state.auth !== undefined}/>
 
             <div className='container-fluid'>
                 <div className='row'>
