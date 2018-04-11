@@ -16,18 +16,18 @@ export class LoginService extends React.Component {
     }
 
     renderBasedOnValue = (context) => {
-        const {auth, setAuthParams, resetAuthParams} = context;
+        const {auth, setAuthParams, resetAuthParams, setClientData} = context;
 
         if (!auth) {
             return (
                 <div>
                     <div>
                         Login:
-                        <Login setParams={setAuthParams}/>
+                        <Login setParams={setAuthParams} setClientData={setClientData}/>
                     </div>
                     <div>
                         Signup:
-                        <Signup setParams={setAuthParams}/>
+                        <Signup setParams={setAuthParams} setClientData={setClientData}/>
                     </div>
                 </div>
             )

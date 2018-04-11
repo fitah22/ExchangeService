@@ -17,14 +17,7 @@ export class Signup extends React.Component {
 
 
     handleSubmit = (values, e, formapi) => {
-        const config = {
-            auth: {
-                username: values.email,
-                password: values.password
-            }
-        };
-
-        axios.post(loginURL+"signup", values, config).then(response => {
+        axios.post(loginURL+"signup", values).then(response => {
             this.setParams(values.email, values.password);
         }).catch(error => {
             formapi.setError("email","Email already in use");

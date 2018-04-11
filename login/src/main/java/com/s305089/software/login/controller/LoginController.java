@@ -21,14 +21,15 @@ public class LoginController {
         this.service = service;
     }
 
-    @GetMapping(value = "/login")
-    public void login(){
+    @PostMapping(value = "/login")
+    public Client login(@RequestBody Client client){
+        //User is already authenticatet at this point.
+        return service.findByEmail(client.getEmail());
         //Dummy method to check if username and password is correct.
     }
 
     @PostMapping(value = "/signup")
-    public ResponseEntity<Client> signup(@RequestBody String s) {
-        Client newClient = new Client();
+    public ResponseEntity<Client> signup(@RequestBody Client newClient) {
         if(newClient.getEmail() == null || newClient.getPassword() == null || newClient.getAddress() == null) {
             log.info("New signup is not accepted: {}", newClient);
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);

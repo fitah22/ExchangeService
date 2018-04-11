@@ -13,6 +13,7 @@ export class Login extends React.Component {
     constructor(props){
         super(props);
         this.setParams = this.props.setParams;
+        this.setClientData = this.props.setClientData;
     }
 
     handleSubmit = (values, e, formapi) => {
@@ -22,8 +23,10 @@ export class Login extends React.Component {
                 password: values.password
             }
         };
-        axios.get(loginURL + "login", config).then(() => {
+        axios.post(loginURL + "login", values, config).then((response) => {
             this.setParams(values.email, values.password);
+            this.setClientData(response.data);
+            console.log("Params and client data set");
         }).catch(() => {
             formapi.setError("email", "Email already in use");
         });
