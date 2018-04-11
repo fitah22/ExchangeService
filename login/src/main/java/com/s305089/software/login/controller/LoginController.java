@@ -1,6 +1,7 @@
 package com.s305089.software.login.controller;
 
 import com.s305089.software.login.dao.ClientService;
+import com.s305089.software.login.model.Account;
 import com.s305089.software.login.model.Client;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,9 +38,15 @@ public class LoginController {
 
         Client client = service.findByEmail(newClient.getEmail());
         if (client == null) {
-            client = service.save(newClient);
-            log.info("New client has signed up: {}", client);
-            return new ResponseEntity<>(client, HttpStatus.OK);
+            Account btcAccount = Account.newBTCAccount();
+            Account usdAccount = Account.newUSDAccount();
+            btcAccount.deposit(100);
+            usdAccount.deposit(100);
+            newClient.addAccount(btcAccount);
+            newClient.addAccount(usdAccount);
+            newClient = service.save(newClient);
+            log.info("New client has signed up: {}", newClient);
+            return new ResponseEntity<>(newClient, HttpStatus.OK);
         }
         log.info("Client already exists: {}", client);
         return new ResponseEntity<>(HttpStatus.CONFLICT);

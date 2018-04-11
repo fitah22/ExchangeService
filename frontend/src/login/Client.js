@@ -21,8 +21,6 @@ export class Client extends React.Component {
                     <h3>Welcome</h3>
                     <p>Email: {data.email}</p>
                     <p>Address: {data.address}</p>
-                    <p>Claimed reward: {claimedRewardText}</p>
-                    {!data.clamiedReward && this.claimRewardBanner()}
                     <Account data={data.accounts}/>
                 </div>
             )
@@ -30,14 +28,5 @@ export class Client extends React.Component {
         return <div></div>;
     }
 
-
-    claimRewardBanner = () => {
-        return <React.Fragment>
-            <Alert color="primary">
-                All users gets a 100$ and 100 BTC bonus as thank you for using your service.
-            </Alert>
-            <Button color="primary" className={"md-2"}>Claim your reward</Button>
-        </React.Fragment>
-    }
 
 }

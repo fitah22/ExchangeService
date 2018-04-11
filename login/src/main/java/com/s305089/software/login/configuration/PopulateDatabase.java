@@ -26,8 +26,12 @@ public class PopulateDatabase {
         Client client = new Client();
         client.setEmail("hello");
         client.setPassword("123");
-        client.addAccount(Account.newBTCAccount());
-        client.addAccount(Account.newUSDAccount());
+        Account btcAccount = Account.newBTCAccount();
+        Account usdAccount = Account.newUSDAccount();
+        btcAccount.deposit(100);
+        usdAccount.deposit(100);
+        client.addAccount(btcAccount);
+        client.addAccount(usdAccount);
         service.save(client);
         log.info("Database is now populated with user 'hello'");
     }
