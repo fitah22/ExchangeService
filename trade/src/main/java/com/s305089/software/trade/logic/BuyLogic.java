@@ -21,20 +21,8 @@ public class BuyLogic {
     public static void sendBuyOrder(String userID, BigDecimal total) {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> s = restTemplate.exchange
-                ("http://localhost:8080", HttpMethod.POST, new HttpEntity<>(createHeaders("tradeuser@s305089.com", "superSecretPassword")), String.class);
+                ("http://localhost:8080", HttpMethod.POST, new HttpEntity<>(TradeLogic.createHeaders("tradeuser@s305089.com", "superSecretPassword")), String.class);
 
-    }
-
-    private static HttpHeaders createHeaders(String username, String password) {
-        String auth = username + ":" + password;
-
-        byte [] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("UTF-8")));
-        String authHeader = "Basic " + new String(encodedAuth);
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("Authorization", authHeader);
-
-        return httpHeaders;
     }
 
 }
