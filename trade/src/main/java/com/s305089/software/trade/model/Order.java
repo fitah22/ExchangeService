@@ -39,7 +39,7 @@ public class Order {
         this.userID = userID;
         this.price = new BigDecimal(price);
         this.amount = new BigDecimal(amount);
-
+        this.amountTraded = new BigDecimal(0);
         this.total = this.price.multiply(this.amount);
         this.market = market;
         this.transactionType = transactionType;
@@ -106,7 +106,15 @@ public class Order {
         this.amountTraded = amountTraded;
     }
 
+    public void addAmountTraded(BigDecimal amountTraded) {
+        this.amountTraded = this.amountTraded.add(amountTraded);
+    }
+
     public BigDecimal getTradedTotal() {
         return amountTraded.multiply(price);
+    }
+
+    public void tradeRemaningAmount() {
+        this.amountTraded = amount;
     }
 }

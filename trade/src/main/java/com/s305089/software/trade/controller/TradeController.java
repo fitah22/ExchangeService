@@ -8,17 +8,11 @@ import com.s305089.software.trade.logic.SellLogic;
 import com.s305089.software.trade.logic.TradeLogic;
 import com.s305089.software.trade.model.Market;
 import com.s305089.software.trade.model.Order;
-import com.s305089.software.trade.model.Transaction;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
-import java.nio.charset.Charset;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.s305089.software.trade.model.TransactionType.*;
 
@@ -56,13 +50,13 @@ public class TradeController {
             BuyLogic.sendBuyOrder(order.getUserID(), order.getTotal());
 
             //Preform transaction to match with sales
-            TradeLogic.preformTransaction(dao.findByActiveTrue(), order);
+            TradeLogic.performTransaction(dao.findByActiveTrue(), order);
 
             //Post the new valuta from trade to account
             BuyLogic.exchangeValuta(order.getUserID(), order.getTradedAmount(), order.getMarket().getSecondCurrency());
         }else {
             //Preform transaction to match with bids/buys
-            TradeLogic.preformTransaction(dao.findByActiveTrue(), order);
+            TradeLogic.performTransaction(dao.findByActiveTrue(), order);
 
             //Post the total that is traded to account
             SellLogic.sendSellOrder(order.getUserID(), order.getTradedTotal());

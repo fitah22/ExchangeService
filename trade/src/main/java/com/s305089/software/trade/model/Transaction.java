@@ -2,29 +2,55 @@ package com.s305089.software.trade.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.util.*;
 
 @Entity
 @Table(name = "TRADE_TRANSACTION")
 public class Transaction {
-    private Order orderToFullfill;
+    private Order orderToFulfill;
     private Collection<Order> ordersToMakeTransaction;
 
-    public Transaction(Order orderToFullfill, Collection<Order> ordersToMakeTransaction) {
+    public Transaction(Order orderToFulfill, Order tradingOrder) {
+        this.orderToFulfill = orderToFulfill;
+        this.ordersToMakeTransaction = Collections.singletonList(tradingOrder);
     }
 
-    public Transaction(Order orderToFullfill, Order tradingOrder) {
-
+    public Transaction(Order orderToFulfill, Collection<Order> ordersToMakeTransaction) {
+        this.orderToFulfill = orderToFulfill;
+        this.ordersToMakeTransaction = ordersToMakeTransaction;
     }
+
 
     public List<Order> getAllOrders() {
         List<Order> all = new ArrayList<>();
-        all.add(orderToFullfill);
+        all.add(orderToFulfill);
         all.addAll(ordersToMakeTransaction);
         return all;
     }
 
-    public void doTrade() {
+    public List<PayRecord> generatePayrecords() {
+        List<PayRecord> payRecords = new ArrayList<>(ordersToMakeTransaction.size());
 
+        for (Order order : ordersToMakeTransaction) {
+            BigDecimal remainingAmount = order.getRemainingAmount();
+            BigDecimal orderToFulfillRemainingAmount = orderToFulfill.getRemainingAmount();
+
+            //if the current order has more amount then what we need
+            if (orderToFulfillRemainingAmount.compareTo(remainingAmount) < 0) {
+                orderToFulfill.tradeRemaningAmount();
+                order.addAmountTraded(orderToFulfillRemainingAmount);
+
+                //The amount that has been traded on this order
+                remainingAmount = remainingAmount.subtract(order.getRemainingAmount());
+            } else {
+                orderToFulfill.addAmountTraded(remainingAmount);
+                order.tradeRemaningAmount();
+            }
+            payRecords.add(new PayRecord(order.getUserID(), order.getTransactionType(), remainingAmount));
+        }
+        payRecords.add(new PayRecord(orderToFulfill.getUserID(), orderToFulfill.getTransactionType(), orderToFulfill.getTradedAmount()));
+
+        return payRecords;
     }
 }
