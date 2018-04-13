@@ -1,8 +1,5 @@
 package com.s305089.software.trade.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.Entity;
@@ -10,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Min;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -28,6 +24,8 @@ public class Order {
     @NonNull
     @Min(value = 0)
     private BigDecimal amount;
+    @Min(value = 0)
+    private BigDecimal amountTraded;
     private BigDecimal total;
     private Market market;
     private TransactionType transactionType;
@@ -60,8 +58,16 @@ public class Order {
         return amount;
     }
 
+    public BigDecimal getRemainingAmount() {
+        return amount.subtract(amountTraded);
+    }
+
     public BigDecimal getTotal() {
         return total;
+    }
+
+    public BigDecimal getRemaningTotal() {
+        return getRemainingAmount().multiply(price);
     }
 
     public Market getMarket() {
@@ -92,4 +98,15 @@ public class Order {
         this.total = price.multiply(amount);
     }
 
+    public BigDecimal getTradedAmount() {
+        return amountTraded;
+    }
+
+    public void setAmountTraded(BigDecimal amountTraded) {
+        this.amountTraded = amountTraded;
+    }
+
+    public BigDecimal getTradedTotal() {
+        return amountTraded.multiply(price);
+    }
 }
