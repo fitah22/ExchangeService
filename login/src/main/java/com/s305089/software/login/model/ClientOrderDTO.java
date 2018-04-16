@@ -6,6 +6,9 @@ public class ClientOrderDTO {
     private Currency currency;
     private Double amount;
 
+    public ClientOrderDTO() {
+    }
+
     public ClientOrderDTO(String email, Currency currency, double amount) {
         this.email = email;
         this.currency = currency;
@@ -34,5 +37,12 @@ public class ClientOrderDTO {
 
     public void setAmount(Double amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public String toString() {
+        return "ClientOrderDTO{ currency=" + currency +
+                ", amount=" + amount +
+                '}';
     }
 }

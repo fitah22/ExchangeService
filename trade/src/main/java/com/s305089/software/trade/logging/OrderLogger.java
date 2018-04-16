@@ -45,7 +45,7 @@ public class OrderLogger {
         }
     }
 
-    @Value("${logginservice.url}")
+    @Value("${userservice.url}")
     public void setUrl(String url) {
         OrderLogger.url = url;
     }

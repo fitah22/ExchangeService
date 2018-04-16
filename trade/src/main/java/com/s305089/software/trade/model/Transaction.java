@@ -1,13 +1,13 @@
 package com.s305089.software.trade.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.*;
 
-@Entity
-@Table(name = "TRADE_TRANSACTION")
+//@Entity
+//@Table(name = "TRADE_TRANSACTION")
 public class Transaction {
+
     private Order orderToFulfill;
     private Collection<Order> ordersToMakeTransaction;
 

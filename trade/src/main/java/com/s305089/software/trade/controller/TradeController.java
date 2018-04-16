@@ -3,18 +3,18 @@ package com.s305089.software.trade.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.s305089.software.trade.dao.OrderDao;
 import com.s305089.software.trade.logging.OrderLogger;
-import com.s305089.software.trade.logic.BuyLogic;
-import com.s305089.software.trade.logic.SellLogic;
 import com.s305089.software.trade.logic.TradeLogic;
-import com.s305089.software.trade.model.Market;
-import com.s305089.software.trade.model.Order;
+import com.s305089.software.trade.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
-import static com.s305089.software.trade.model.TransactionType.*;
+import static com.s305089.software.trade.model.TransactionType.BUY;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -29,41 +29,46 @@ public class TradeController {
 
         Order order = new Order("hello", 15d, 1d, Market.BTC_USD, BUY);
         order.setActive(true);
-        order.calculateTotal();
         dao.save(order);
         return dao.findAll();
     }
 
 
-
     @PostMapping
-    public HttpStatus makeOrder(@RequestBody Order order) throws JsonProcessingException {
+    public ResponseEntity makeOrder(@RequestBody OrderDTO orderDTO) throws JsonProcessingException {
 
+        Order order = orderDTO.getOrder();
         order.setTimestamp(new Date());
-        order = dao.save(order);
 
-        //TODO: CHeck with login that funds are available
-        //If buy: Withdraw money right away
-        //If sell: Don't transfer money until transaction is made
-        if(order.getTransactionType() == BUY){
-            //Reserve money on account
-            BuyLogic.sendBuyOrder(order.getUserID(), order.getTotal());
 
-            //Preform transaction to match with sales
-            TradeLogic.performTransaction(dao.findByActiveTrue(), order);
-
-            //Post the new valuta from trade to account
-            BuyLogic.exchangeValuta(order.getUserID(), order.getTradedAmount(), order.getMarket().getSecondCurrency());
-        }else {
-            //Preform transaction to match with bids/buys
-            TradeLogic.performTransaction(dao.findByActiveTrue(), order);
-
-            //Post the total that is traded to account
-            SellLogic.sendSellOrder(order.getUserID(), order.getTradedTotal());
+        boolean fundsOK = TradeLogic.checkFunds(orderDTO.getUsername(), orderDTO.getPassword(), order);
+        if (!fundsOK) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        OrderLogger.logToLogService(order);
-        return HttpStatus.OK;
+        //If buy: Reserve/withdraw money right away
+        //If sell: Don't transfer money until transaction is made
+        if (order.getTransactionType() == BUY) {
+            boolean buyOK = TradeLogic.sendBuyOrder(order.getUserID(), order.getMarket().getSecondCurrency(), order.getTotal());
+            if (!buyOK) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        }
+
+        //Preform transaction to match with bids (buys) and asks (sells)
+        Transaction transaction = TradeLogic.performTransaction(dao.findByActiveTrue(), order);
+        List<PayRecord> payRecords = transaction.generatePayrecords();
+        boolean tradeOK = TradeLogic.sendPayRecordsToUserAndHistoryService(payRecords);
+
+        if (tradeOK) {
+            List<Order> orders = transaction.getAllOrders();
+            dao.saveAll(orders);
+
+            OrderLogger.logToLogService(order);
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
 

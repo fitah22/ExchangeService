@@ -55,8 +55,8 @@ public class Account {
         return currency;
     }
 
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
+    public BigDecimal getBalance() {
+        return balance;
     }
 
     @Override

@@ -25,9 +25,10 @@ public class Order {
     @Min(value = 0)
     private BigDecimal amount;
     @Min(value = 0)
-    private BigDecimal amountTraded;
-    private BigDecimal total;
+    private BigDecimal amountTraded = new BigDecimal(0);
+    @NonNull
     private Market market;
+    @NonNull
     private TransactionType transactionType;
     private Boolean active = true;
     private Date timestamp = new Date();
@@ -39,8 +40,6 @@ public class Order {
         this.userID = userID;
         this.price = new BigDecimal(price);
         this.amount = new BigDecimal(amount);
-        this.amountTraded = new BigDecimal(0);
-        this.total = this.price.multiply(this.amount);
         this.market = market;
         this.transactionType = transactionType;
         this.active = true;
@@ -63,7 +62,7 @@ public class Order {
     }
 
     public BigDecimal getTotal() {
-        return total;
+        return this.price.multiply(this.amount);
     }
 
     public BigDecimal getRemaningTotal() {
@@ -92,10 +91,6 @@ public class Order {
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
-    }
-
-    public void calculateTotal() {
-        this.total = price.multiply(amount);
     }
 
     public BigDecimal getTradedAmount() {

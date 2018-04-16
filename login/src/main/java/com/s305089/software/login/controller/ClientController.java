@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -81,8 +82,26 @@ public class ClientController {
         return HttpStatus.NOT_FOUND;
     }
 
+    @GetMapping(value = "/user/funds/{currency}/{amount}")
+    public ResponseEntity getFunds ( @PathVariable Currency currency, @PathVariable BigDecimal amount, Principal principal) {
+        Client client = service.findByEmail(principal.getName());
+        if(client != null){
+            Optional<Account> account = client.getAccounts().stream().filter(a -> a.getCurrency() == currency).findFirst();
+            if(account.isPresent()){
+                BigDecimal balance = account.get().getBalance();
+                if(balance.compareTo(amount) > 0){
+                    return ResponseEntity.ok().build();
+                }else {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+                }
+            }
+
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @PostMapping(value = "/user/buy")
-    public ResponseEntity withdrawIfHSufficientFunds(@RequestBody ClientOrderDTO clientOrderDTO, Principal principal) {
+    public ResponseEntity withdrawBasedOnBuyOrder(@RequestBody ClientOrderDTO clientOrderDTO, Principal principal) {
         if (principal.getName().equals("tradeuser@s305089.com")) {
 
             Client client = service.findByEmail(clientOrderDTO.getEmail());
@@ -94,15 +113,15 @@ public class ClientController {
                         account.withdraw(clientOrderDTO.getAmount());
                     } catch (IllegalAccountTransactionException e) {
                         HistoryConnector.logToLogService(new ErrorLog(client.getEmail(), e.getMessage()), "/error");
-                        e.printStackTrace();
+                        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
                     }
-                    return new ResponseEntity(HttpStatus.OK);
+                    return ResponseEntity.ok().build();
                 }
             }
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
 
-        return new ResponseEntity(HttpStatus.FORBIDDEN);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @PostMapping(value = "/user/sell")

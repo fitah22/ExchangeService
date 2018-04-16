@@ -1,21 +1,21 @@
 package com.s305089.software.trade.logic;
 
-import com.s305089.software.trade.logging.OrderLogger;
 import com.s305089.software.trade.model.Order;
 import com.s305089.software.trade.model.PayRecord;
 import com.s305089.software.trade.model.Transaction;
-import org.apache.tomcat.util.codec.binary.Base64;
+import com.s305089.software.trade.model.TransactionType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Component
 public class TradeLogic {
 
     private static String historyURL;
@@ -28,20 +28,16 @@ public class TradeLogic {
      * @param orderToFullfill The order we want to trade
      * @return A list of orders with updated values ready to be saved to database. T
      */
-    public static List<Order> performTransaction(List<Order> allActiveOrders, Order orderToFullfill) {
+    public static Transaction performTransaction(List<Order> allActiveOrders, Order orderToFullfill) {
         List<Order> ordersThatCanBeTradedWith = allActiveOrders
                 .stream()
-                .filter(order -> order.getTotal().compareTo(orderToFullfill.getTotal()) == 0)
                 .filter(order -> order.getMarket().equals(orderToFullfill.getMarket()))
                 .filter(order -> order.getTransactionType().isOpposit(orderToFullfill.getTransactionType()))
+                .filter(order -> order.getRemainingAmount().compareTo(new BigDecimal(0)) > 0)
                 .collect(Collectors.toList());
 
-        Transaction transaction = makeTransaction(orderToFullfill, ordersThatCanBeTradedWith);
+        return makeTransaction(orderToFullfill, ordersThatCanBeTradedWith);
 
-        List<PayRecord> payRecords = transaction.generatePayrecords();
-        sendPayRecordsToUserAndHistoryService(payRecords);
-
-        return transaction.getAllOrders();
     }
 
     /**
@@ -67,7 +63,7 @@ public class TradeLogic {
             List<Order> ordersToMakeTransaction = new ArrayList<>();
             BigDecimal amount = new BigDecimal(0);
             //NB: We might add orders so we get above the amount to fulfill, this is OK and taken care of when we fulfill the transaction.
-            for (int i = 0; amount.compareTo(orderToFullfill.getAmount()) < 0 || i < ordersThatCanBeTradedWith.size(); i++) {
+            for (int i = 0; amount.compareTo(orderToFullfill.getAmount()) < 0 && i < ordersThatCanBeTradedWith.size(); i++) {
                 Order order = ordersThatCanBeTradedWith.get(i);
                 amount = amount.add(order.getRemainingAmount());
                 ordersToMakeTransaction.add(order);
@@ -79,29 +75,48 @@ public class TradeLogic {
     }
 
 
-    private static void sendPayRecordsToUserAndHistoryService(List<PayRecord> records) {
+    public static boolean sendPayRecordsToUserAndHistoryService(List<PayRecord> records) {
 
 
-        HttpEntity<Object> requestBody = new HttpEntity<>(records, createHeaders("tradeuser@s305089.com", "superSecretPassword"));
+        HttpEntity<Object> requestBody = new HttpEntity<>(records, Util.createHeadersAsUser("tradeuser@s305089.com", "superSecretPassword"));
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> responseUser = restTemplate.exchange(userURL, HttpMethod.POST, requestBody, String.class);
-        ResponseEntity<String> responseHistory = restTemplate.exchange(historyURL, HttpMethod.POST, requestBody, String.class);
-
+        //ResponseEntity<String> responseUser = restTemplate.exchange(userURL + "/payrecords", HttpMethod.POST, requestBody, String.class);
+        //ResponseEntity<String> responseHistory = restTemplate.exchange(historyURL + "/payrecords", HttpMethod.POST, requestBody, String.class);
+        return true;
     }
 
 
-    public static HttpHeaders createHeaders(String username, String password) {
-        String auth = username + ":" + password;
+    public static boolean checkFunds(String username, String password, Order order) {
+        String currency;
 
-        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("UTF-8")));
-        String authHeader = "Basic " + new String(encodedAuth);
+        if (order.getTransactionType() == TransactionType.BUY) {
+            currency = order.getMarket().getSecondCurrency(); //Ex: If we buy BTC, check that we have enough USD
+        } else {
+            currency = order.getMarket().getSecondCurrency(); //EX: If we sell BTC, check that we have enough BTC
+        }
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        httpHeaders.set("Authorization", authHeader);
+        String url = userURL + "/user/funds/" + currency + "/" + order.getTotal();
 
-        return httpHeaders;
+
+        HttpEntity<Object> requestBody = new HttpEntity<>(Util.createHeadersAsUser(username, password));
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> responseHistory = restTemplate.exchange(url, HttpMethod.GET, requestBody, String.class);
+
+        return responseHistory.getStatusCode().is2xxSuccessful();
     }
+
+    public static boolean sendBuyOrder(String userId, String currency, BigDecimal total) {
+        String url = userURL + "/user/buy/";
+        BuyOrderDTO buyOrder = new BuyOrderDTO(userId, currency, total);
+        HttpHeaders header = Util.createHeadersAsUser("tradeuser@s305089.com", "superSecretPassword");
+
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> s = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(buyOrder, header), String.class);
+
+        return s.getStatusCode().is2xxSuccessful();
+    }
+
 
     @Value("${historyservice.url}")
     public void setHistoryUrl(String url) {

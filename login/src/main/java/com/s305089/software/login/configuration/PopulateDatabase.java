@@ -34,6 +34,13 @@ public class PopulateDatabase {
         client.addAccount(usdAccount);
         service.save(client);
         log.info("Database is now populated with user 'hello'");
+
+        Client tradeModule = new Client();
+        tradeModule.setEmail("tradeuser@s305089.com");
+        tradeModule.setPassword("superSecretPassword");
+        tradeModule.setAddress("OsloMet P35");
+        service.save(tradeModule);
+        log.info("Database is now populated with user '{}'", tradeModule.getEmail());
     }
 
 }
