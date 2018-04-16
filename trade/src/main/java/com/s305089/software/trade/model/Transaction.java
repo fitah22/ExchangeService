@@ -46,9 +46,9 @@ public class Transaction {
                 orderToFulfill.addAmountTraded(remainingAmount);
                 order.tradeRemaningAmount();
             }
-            payRecords.add(new PayRecord(order.getUserID(), order.getTransactionType(), order.getMarket(), remainingAmount));
+            payRecords.add(new PayRecord(order, remainingAmount));
         }
-        payRecords.add(new PayRecord(orderToFulfill.getUserID(), orderToFulfill.getTransactionType(), orderToFulfill.getMarket(), orderToFulfill.getTradedAmount()));
+        payRecords.add(new PayRecord(orderToFulfill, orderToFulfill.getTradedAmount()));
 
         return payRecords;
     }
