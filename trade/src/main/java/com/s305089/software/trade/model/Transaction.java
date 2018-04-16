@@ -1,6 +1,5 @@
 package com.s305089.software.trade.model;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -47,9 +46,9 @@ public class Transaction {
                 orderToFulfill.addAmountTraded(remainingAmount);
                 order.tradeRemaningAmount();
             }
-            payRecords.add(new PayRecord(order.getUserID(), order.getTransactionType(), remainingAmount));
+            payRecords.add(new PayRecord(order.getUserID(), order.getTransactionType(), order.getMarket(), remainingAmount));
         }
-        payRecords.add(new PayRecord(orderToFulfill.getUserID(), orderToFulfill.getTransactionType(), orderToFulfill.getTradedAmount()));
+        payRecords.add(new PayRecord(orderToFulfill.getUserID(), orderToFulfill.getTransactionType(), orderToFulfill.getMarket(), orderToFulfill.getTradedAmount()));
 
         return payRecords;
     }
