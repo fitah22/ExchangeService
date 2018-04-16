@@ -3,12 +3,12 @@ package com.s305089.software.trade.logic;
 import java.math.BigDecimal;
 
 //Maps to ClientOrderDTO in login module
-class BuyOrderDTO {
+class OrderDTO {
     private String email;
     private String currency;
     private BigDecimal amount;
 
-    public BuyOrderDTO(String email, String currency, BigDecimal amount) {
+    public OrderDTO(String email, String currency, BigDecimal amount) {
         this.email = email;
         this.currency = currency;
         this.amount = amount;

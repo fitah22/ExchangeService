@@ -15,11 +15,11 @@ public class PayRecord {
     @JsonIgnore
     @ManyToOne
     private Order order;
-    private BigDecimal amount;
+    private BigDecimal tradedAmount;
 
     public PayRecord(Order order, BigDecimal tradedAmount) {
         this.order = order;
-        this.amount = tradedAmount;
+        this.tradedAmount = tradedAmount;
     }
 
     @JsonProperty(value = "userId")
@@ -32,13 +32,17 @@ public class PayRecord {
         return order.getTransactionType();
     }
 
-    @JsonProperty(value = "amount")
-    public BigDecimal getAmount() {
-        return amount;
+    @JsonProperty(value = "tradedAmount")
+    public BigDecimal getTradedAmount() {
+        return tradedAmount;
     }
 
-    @JsonProperty(value = "market")
-    public Market getMarket() {
-        return order.getMarket();
+    @JsonProperty(value = "currency")
+    public String getCurrency() {
+        if(getTransactionType() == TransactionType.BUY){
+            return order.getMarket().getSecondCurrency();
+        }else{
+            return order.getMarket().getMainCurrency();
+        }
     }
 }

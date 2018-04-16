@@ -1,5 +1,6 @@
 package com.s305089.software.trade.logic;
 
+import com.s305089.software.trade.model.Market;
 import com.s305089.software.trade.model.Order;
 import com.s305089.software.trade.model.PayRecord;
 import com.s305089.software.trade.model.TransactionType;
@@ -12,6 +13,8 @@ import org.springframework.web.client.RestTemplate;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.List;
+
+import static com.s305089.software.trade.model.TransactionType.*;
 
 @Component
 public class NetworkUtil {
@@ -44,7 +47,7 @@ public class NetworkUtil {
     public static boolean checkFunds(String username, String password, Order order) {
         String currency;
 
-        if (order.getTransactionType() == TransactionType.BUY) {
+        if (order.getTransactionType() == BUY) {
             currency = order.getMarket().getSecondCurrency(); //Ex: If we buy BTC, check that we have enough USD
         } else {
             currency = order.getMarket().getSecondCurrency(); //EX: If we sell BTC, check that we have enough BTC
@@ -55,21 +58,32 @@ public class NetworkUtil {
 
         HttpEntity<Object> requestBody = new HttpEntity<>(createHeadersAsUser(username, password));
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> responseHistory = restTemplate.exchange(url, HttpMethod.GET, requestBody, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, requestBody, String.class);
 
-        return responseHistory.getStatusCode().is2xxSuccessful();
+        return response.getStatusCode().is2xxSuccessful();
     }
 
-    public static boolean sendBuyOrder(String userId, String currency, BigDecimal total) {
-        String url = userURL + "/user/buy/";
-        BuyOrderDTO buyOrder = new BuyOrderDTO(userId, currency, total);
+
+    public static boolean sendReserveOrder(String userId, Market market, BigDecimal total, TransactionType transactionType) {
+        String url = userURL + "/reservefunds/";
+        String currency;
+        if(transactionType == BUY){
+            url += "buy/";
+            currency = market.getSecondCurrency();
+        }else{
+            url += "sell/";
+            currency = market.getMainCurrency();
+        }
+
+
+        OrderDTO buyOrder = new OrderDTO(userId, currency, total);
         HttpHeaders header = createHeadersAsUser("tradeuser@s305089.com", "superSecretPassword");
 
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> s = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(buyOrder, header), String.class);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(buyOrder, header), String.class);
 
-        return s.getStatusCode().is2xxSuccessful();
+        return response.getStatusCode().is2xxSuccessful();
     }
 
     @Value("${historyservice.url}")

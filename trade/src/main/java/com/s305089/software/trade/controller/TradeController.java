@@ -50,14 +50,8 @@ public class TradeController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        //If buy: Reserve/withdraw money right away
-        //If sell: Don't transfer money until transaction is made
-        if (order.getTransactionType() == BUY) {
-            boolean buyOK = NetworkUtil.sendBuyOrder(order.getUserID(), order.getMarket().getSecondCurrency(), order.getTotal());
-            if (!buyOK) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
-        }
+        boolean reserveOK = NetworkUtil.sendReserveOrder(order.getUserID(), order.getMarket(), order.getTotal(), order.getTransactionType());
+        if(!reserveOK) return   ResponseEntity.status(HttpStatus.FORBIDDEN).build();;
 
         //Preform transaction to match with bids (buys) and asks (sells)
         Transaction transaction = TradeLogic.performTransaction(order, orderDao.findByActiveTrue());

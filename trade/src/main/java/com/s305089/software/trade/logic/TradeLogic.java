@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.s305089.software.trade.model.TransactionType.BUY;
+
 public class TradeLogic {
 
     /**

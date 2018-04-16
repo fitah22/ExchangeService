@@ -6,29 +6,27 @@ import com.s305089.software.login.logging.HistoryConnector;
 import com.s305089.software.login.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-//User profile service
+//User profile clientService
 public class ClientController {
 
     @Autowired
-    ClientService service;
+    ClientService clientService;
 
 
     @GetMapping("/claim")
     public ResponseEntity claimMoney(Principal principal) {
-        Client client = service.findByEmail(principal.getName());
+        Client client = clientService.findByEmail(principal.getName());
         if (client != null && !client.hasHasClamiedReward()) {
 
             Optional<Account> usd = client.getAccounts().stream()
@@ -43,7 +41,7 @@ public class ClientController {
                 usd.get().deposit(100);
                 btc.get().deposit(100);
                 client.setHasClamiedReward(true);
-                return new ResponseEntity<>(service.save(client), HttpStatus.OK);
+                return new ResponseEntity<>(clientService.save(client), HttpStatus.OK);
             }
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -53,10 +51,10 @@ public class ClientController {
     @PostMapping(value = "/user/{email}/password")
     //a. User can change their password
     public Object updatePassword(@PathVariable String email, @RequestBody String password) {
-        Client client = service.findByEmail(email);
+        Client client = clientService.findByEmail(email);
         if (client != null) {
             client.setPassword(password);
-            return service.save(client);
+            return clientService.save(client);
         }
         return HttpStatus.NOT_FOUND;
     }
@@ -64,10 +62,10 @@ public class ClientController {
     @PostMapping(value = "/user/{email}")
     //b. Address information update
     public Object updateAddress(@PathVariable String email, @RequestBody String address) {
-        Client client = service.findByEmail(email);
+        Client client = clientService.findByEmail(email);
         if (client != null) {
             client.setAddress(address);
-            return service.saveWithoutPassword(client);
+            return clientService.saveWithoutPassword(client);
         }
         return HttpStatus.NOT_FOUND;
     }
@@ -75,7 +73,7 @@ public class ClientController {
     @GetMapping(value = "/user/{email}/balance")
     //c. Information about the balance info(crypto)
     public Object accountBalance(@PathVariable String email) {
-        Client client = service.findByEmail(email);
+        Client client = clientService.findByEmail(email);
         if (client != null) {
             return client.getAccounts();
         }
@@ -83,15 +81,15 @@ public class ClientController {
     }
 
     @GetMapping(value = "/user/funds/{currency}/{amount}")
-    public ResponseEntity getFunds ( @PathVariable Currency currency, @PathVariable BigDecimal amount, Principal principal) {
-        Client client = service.findByEmail(principal.getName());
-        if(client != null){
+    public ResponseEntity getFunds(@PathVariable Currency currency, @PathVariable BigDecimal amount, Principal principal) {
+        Client client = clientService.findByEmail(principal.getName());
+        if (client != null) {
             Optional<Account> account = client.getAccounts().stream().filter(a -> a.getCurrency() == currency).findFirst();
-            if(account.isPresent()){
+            if (account.isPresent()) {
                 BigDecimal balance = account.get().getBalance();
-                if(balance.compareTo(amount) > 0){
+                if (balance.compareTo(amount) > 0) {
                     return ResponseEntity.ok().build();
-                }else {
+                } else {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
                 }
             }
@@ -100,45 +98,63 @@ public class ClientController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping(value = "/user/buy")
-    public ResponseEntity withdrawBasedOnBuyOrder(@RequestBody ClientOrderDTO clientOrderDTO, Principal principal) {
-        if (principal.getName().equals("tradeuser@s305089.com")) {
+    @PostMapping(value = "/reservefunds")
+    public ResponseEntity reserveBasedOnOrder(@RequestBody ClientOrderDTO clientOrderDTO, Principal principal) {
+        if (isNotTradeModule(principal)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
-            Client client = service.findByEmail(clientOrderDTO.getEmail());
-            if (client != null) {
-                Optional<Account> accountOpt = client.getAccounts().stream().filter(a -> a.getCurrency().equals(clientOrderDTO.getCurrency())).findFirst();
-                if (accountOpt.isPresent()) {
-                    Account account = accountOpt.get();
-                    try {
-                        account.withdraw(clientOrderDTO.getAmount());
-                    } catch (IllegalAccountTransactionException e) {
-                        HistoryConnector.logToLogService(new ErrorLog(client.getEmail(), e.getMessage()), "/error");
-                        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-                    }
-                    return ResponseEntity.ok().build();
-                }
-            }
+        Client client = clientService.findByEmail(clientOrderDTO.getEmail());
+        if (client == null) {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return withdrawFromAccountBasedOnOrder(client, clientOrderDTO.getCurrency(), clientOrderDTO.getAmount());
     }
 
-    @PostMapping(value = "/user/sell")
-    public ResponseEntity depositBecauseOfSell(@RequestBody ClientOrderDTO clientOrderDTO, Principal principal) {
-        if (principal.getName().equals("tradeuser@s305089.com")) {
-
-            Client client = service.findByEmail(clientOrderDTO.getEmail());
-            if (client != null) {
-                Optional<Account> accountOpt = client.getAccounts().stream().filter(a -> a.getCurrency().equals(clientOrderDTO.getCurrency())).findFirst();
-                Account account = accountOpt.orElseGet(() -> Account.newFromCurrency(clientOrderDTO.getCurrency()));
-                account.deposit(clientOrderDTO.getAmount());
-                return new ResponseEntity(HttpStatus.OK);
+    private ResponseEntity withdrawFromAccountBasedOnOrder(Client client, Currency currency, Double amount) {
+        Optional<Account> accountOpt = client.getAccounts().stream().filter(a -> a.getCurrency().equals(currency)).findFirst();
+        if (accountOpt.isPresent()) {
+            Account account = accountOpt.get();
+            try {
+                account.withdraw(amount);
+                clientService.saveWithoutPassword(client);
+            } catch (IllegalAccountTransactionException e) {
+                HistoryConnector.logToLogService(new ErrorLog(client.getEmail(), e.getMessage()), "/error");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+
+    public void reserveBasedOnSellOrder(Client client, Currency currency, BigDecimal amount) {
+        Optional<Account> accountOpt = client.getAccounts().stream().filter(a -> a.getCurrency().equals(currency)).findFirst();
+        Account account = accountOpt.orElseGet(() -> Account.newFromCurrency(currency));
+        account.deposit(amount);
+    }
+
+
+    @PostMapping(value = "/payrecords")
+    public ResponseEntity executePayRecords(@RequestBody List<PayRecordDTO> payRecords, Principal principal) {
+        if (isNotTradeModule(principal)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        List<Client> clients = new ArrayList<>(payRecords.size());
+        for (PayRecordDTO payRecord : payRecords) {
+            Client client = clientService.findByEmail(payRecord.getUserID());
+            if (client == null) {
+                //This should really not happen
+                HistoryConnector.logToLogService(new ErrorLog(payRecord.getUserID(), "Not found when executing pay records"), "/error");
+                return ResponseEntity.notFound().build();
+            }
+
+            reserveBasedOnSellOrder(client, payRecord.getCurrency(), payRecord.getAmount());
         }
 
-        return new ResponseEntity(HttpStatus.FORBIDDEN);
+        clientService.saveAll(clients);
+        return ResponseEntity.ok().build();
     }
 
+    private boolean isNotTradeModule(Principal principal) {
+        return !principal.getName().equals("tradeuser@s305089.com");
+    }
 }

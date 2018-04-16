@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,8 +32,6 @@ public class ClientService {
     }
 
 
-
-
     public Client findByEmail(String email) {
         return dao.findByEmail(email);
     }
@@ -45,6 +45,15 @@ public class ClientService {
 
     public <S extends Client> S saveWithoutPassword(S entity) {
         return dao.save(entity);
+    }
+
+    public <S extends Client> Iterable<S> saveAll(Iterable<S> entities) {
+        List<S> savedEntities = new ArrayList<>();
+        for (S entity : entities) {
+            savedEntities.add(saveWithoutPassword(entity));
+        }
+
+        return savedEntities;
     }
 
     public Optional<Client> findById(Integer integer) {
