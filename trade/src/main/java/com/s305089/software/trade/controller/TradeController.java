@@ -2,6 +2,7 @@ package com.s305089.software.trade.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.s305089.software.trade.dao.OrderDao;
+import com.s305089.software.trade.dao.PayRecordDao;
 import com.s305089.software.trade.logging.OrderLogger;
 import com.s305089.software.trade.logic.TradeLogic;
 import com.s305089.software.trade.model.*;
@@ -21,7 +22,9 @@ import static com.s305089.software.trade.model.TransactionType.BUY;
 public class TradeController {
 
     @Autowired
-    private OrderDao dao;
+    private OrderDao orderDao;
+    @Autowired
+    private PayRecordDao payRecordDao;
 
 
     @GetMapping()
@@ -29,8 +32,8 @@ public class TradeController {
 
         Order order = new Order("hello", 15d, 1d, Market.BTC_USD, BUY);
         order.setActive(true);
-        dao.save(order);
-        return dao.findAll();
+        orderDao.save(order);
+        return orderDao.findAll();
     }
 
 
@@ -56,13 +59,15 @@ public class TradeController {
         }
 
         //Preform transaction to match with bids (buys) and asks (sells)
-        Transaction transaction = TradeLogic.performTransaction(dao.findByActiveTrue(), order);
+        Transaction transaction = TradeLogic.performTransaction(orderDao.findByActiveTrue(), order);
         List<PayRecord> payRecords = transaction.generatePayrecords();
         boolean tradeOK = TradeLogic.sendPayRecordsToUserAndHistoryService(payRecords);
 
         if (tradeOK) {
             List<Order> orders = transaction.getAllOrders();
-            dao.saveAll(orders);
+            orderDao.saveAll(orders);
+
+            payRecordDao.saveAll(payRecords);
 
             OrderLogger.logToLogService(order);
             return ResponseEntity.ok().build();

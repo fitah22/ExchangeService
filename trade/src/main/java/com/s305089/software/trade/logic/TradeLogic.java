@@ -33,6 +33,7 @@ public class TradeLogic {
                 .stream()
                 .filter(order -> order.getMarket().equals(orderToFullfill.getMarket()))
                 .filter(order -> order.getTransactionType().isOpposit(orderToFullfill.getTransactionType()))
+                .filter(order -> order.getPrice().compareTo(orderToFullfill.getPrice()) == 0)
                 .filter(order -> order.getRemainingAmount().compareTo(new BigDecimal(0)) > 0)
                 .collect(Collectors.toList());
 

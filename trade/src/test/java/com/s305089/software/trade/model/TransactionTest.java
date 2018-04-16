@@ -1,6 +1,5 @@
 package com.s305089.software.trade.model;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,16 +11,16 @@ import static org.junit.Assert.assertEquals;
 public class TransactionTest {
 
     private Transaction buyTransaction;
-    private Order order1, order2, toFulfiill;
+    private Order order1, order2, toFulfill;
 
     @Before
     public void setUp() throws Exception {
         order1 = new Order("John", 15d, 1d, Market.BTC_USD, TransactionType.SELL);
         order2 = new Order("Kasper", 15d, 2.5d, Market.BTC_USD, TransactionType.SELL);
 
-        toFulfiill = new Order("Svergja", 15d, 3d, Market.BTC_USD, TransactionType.BUY);
+        toFulfill = new Order("Svergja", 15d, 3d, Market.BTC_USD, TransactionType.BUY);
 
-        buyTransaction = new Transaction(toFulfiill, Arrays.asList(order1, order2));
+        buyTransaction = new Transaction(toFulfill, Arrays.asList(order1, order2));
     }
 
     @Test
@@ -33,10 +32,10 @@ public class TransactionTest {
 
         assertEquals(0d, order1.getRemainingAmount().doubleValue(), 0.0003);
         assertEquals(0.5d, order2.getRemainingAmount().doubleValue(), 0.0003);
-        assertEquals(0d, toFulfiill.getRemainingAmount().doubleValue(), 0.0003);
+        assertEquals(0d, toFulfill.getRemainingAmount().doubleValue(), 0.0003);
 
-        assertEquals(3d, toFulfiill.getTradedAmount().doubleValue(), 0.0003);
-        assertEquals(45d, toFulfiill.getTradedTotal().doubleValue(), 0.0003);
+        assertEquals(3d, toFulfill.getTradedAmount().doubleValue(), 0.0003);
+        assertEquals(45d, toFulfill.getTradedTotal().doubleValue(), 0.0003);
 
 
         assertEquals("John", actual.get(0).getUserID());
