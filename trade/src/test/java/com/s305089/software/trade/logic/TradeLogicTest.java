@@ -32,7 +32,7 @@ public class TradeLogicTest {
     @Test
     public void transaction_with_matching_opposite_order() {
         Order toFulfill = new Order("s305089", 15d, 1d, BTC_USD, BUY);
-        Transaction transaction = TradeLogic.performTransaction(activeOrders, toFulfill);
+        Transaction transaction = TradeLogic.performTransaction(toFulfill, activeOrders);
         List<Order> allOrders = transaction.getAllOrders();
         assertEquals(2, allOrders.size());
         assertEquals(toFulfill, allOrders.get(0));
@@ -42,7 +42,7 @@ public class TradeLogicTest {
     @Test
     public void multiple_orders_to_fulfill() {
         Order toFulfill = new Order("s305089", 15d, 10d, BTC_USD, BUY);
-        Transaction transaction = TradeLogic.performTransaction(activeOrders, toFulfill);
+        Transaction transaction = TradeLogic.performTransaction(toFulfill, activeOrders);
         List<Order> allOrders = transaction.getAllOrders();
         assertEquals(3, allOrders.size());
         assertEquals(toFulfill, allOrders.get(0));
@@ -52,7 +52,7 @@ public class TradeLogicTest {
     @Test
     public void no_orders_should_be_added() {
         Order toFulfill = new Order("s305089", 10d, 10d, BTC_USD, SELL);
-        Transaction transaction = TradeLogic.performTransaction(activeOrders, toFulfill);
+        Transaction transaction = TradeLogic.performTransaction(toFulfill, activeOrders);
         List<Order> allOrders = transaction.getAllOrders();
         assertEquals(1, allOrders.size());
         assertEquals(toFulfill, allOrders.get(0));

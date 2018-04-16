@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.s305089.software.trade.dao.OrderDao;
 import com.s305089.software.trade.dao.PayRecordDao;
 import com.s305089.software.trade.logging.OrderLogger;
+import com.s305089.software.trade.logic.NetworkUtil;
 import com.s305089.software.trade.logic.TradeLogic;
 import com.s305089.software.trade.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,13 +39,13 @@ public class TradeController {
 
 
     @PostMapping
-    public ResponseEntity makeOrder(@RequestBody OrderDTO orderDTO) throws JsonProcessingException {
+    public ResponseEntity makeOrder(@RequestBody OrderDTO orderDTO) {
 
         Order order = orderDTO.getOrder();
         order.setTimestamp(new Date());
 
 
-        boolean fundsOK = TradeLogic.checkFunds(orderDTO.getUsername(), orderDTO.getPassword(), order);
+        boolean fundsOK = NetworkUtil.checkFunds(orderDTO.getUsername(), orderDTO.getPassword(), order);
         if (!fundsOK) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -52,16 +53,16 @@ public class TradeController {
         //If buy: Reserve/withdraw money right away
         //If sell: Don't transfer money until transaction is made
         if (order.getTransactionType() == BUY) {
-            boolean buyOK = TradeLogic.sendBuyOrder(order.getUserID(), order.getMarket().getSecondCurrency(), order.getTotal());
+            boolean buyOK = NetworkUtil.sendBuyOrder(order.getUserID(), order.getMarket().getSecondCurrency(), order.getTotal());
             if (!buyOK) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         }
 
         //Preform transaction to match with bids (buys) and asks (sells)
-        Transaction transaction = TradeLogic.performTransaction(orderDao.findByActiveTrue(), order);
+        Transaction transaction = TradeLogic.performTransaction(order, orderDao.findByActiveTrue());
         List<PayRecord> payRecords = transaction.generatePayrecords();
-        boolean tradeOK = TradeLogic.sendPayRecordsToUserAndHistoryService(payRecords);
+        boolean tradeOK = NetworkUtil.sendPayRecordsToUserAndHistoryService(payRecords);
 
         if (tradeOK) {
             List<Order> orders = transaction.getAllOrders();
