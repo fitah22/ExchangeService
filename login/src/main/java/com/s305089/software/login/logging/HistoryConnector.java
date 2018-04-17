@@ -29,9 +29,10 @@ public class HistoryConnector {
                     output.write(logMessage.getMessageUTF8());
                 }
 
-                log.info("Log message sent.");
+                connection.getInputStream();
+                log.info("Log message sent of type: {}", logMessage.getClass().getSimpleName());
             } catch (IOException e) {
-                log.error("Could not connect to logging server");
+                log.error("Could not connect to logging server or error. Message of type {}", logMessage.getClass().getSimpleName());
             }
         }).start();
     }

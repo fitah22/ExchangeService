@@ -10,4 +10,8 @@ public class PayRecordMessage implements Loggable {
     public PayRecordMessage(List<PayRecordDTO> payRecords) {
         this.payRecords = payRecords;
     }
+
+    public List<PayRecordDTO> getPayRecords() {
+        return payRecords;
+    }
 }

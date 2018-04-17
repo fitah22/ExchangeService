@@ -65,7 +65,7 @@ public class TradeController {
         //Preform transaction to match with bids (buys) and asks (sells)
         Transaction transaction = TradeLogic.performTransaction(order, orderDao.findByActiveTrue());
         List<PayRecord> payRecords = transaction.generatePayrecords();
-        boolean tradeOK = NetworkUtil.sendPayRecordsToUserAndHistoryService(payRecords);
+        boolean tradeOK = NetworkUtil.sendPayRecordsToUserService(payRecords);
 
         if (tradeOK) {
             List<Order> orders = transaction.getAllOrders();

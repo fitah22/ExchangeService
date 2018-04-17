@@ -1,4 +1,4 @@
-package com.s305089.software.history.model;
+package com.s305089.software.history.api;
 
 import org.springframework.lang.NonNull;
 
@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-public class APIEvent {
+class APIMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -14,7 +14,7 @@ public class APIEvent {
     private String username;
     @NonNull
     private Boolean authenticated;
-    private Date timestamp;
+    private Date timestamp = new Date();
     private String apiEndpoint;
 
 
@@ -48,5 +48,14 @@ public class APIEvent {
 
     public void setApiEndpoint(String apiEndpoint) {
         this.apiEndpoint = apiEndpoint;
+    }
+
+    @Override
+    public String toString() {
+        return "APIMessage{" +
+                "username='" + username + '\'' +
+                ", authenticated=" + authenticated +
+                ", apiEndpoint='" + apiEndpoint + '\'' +
+                '}';
     }
 }

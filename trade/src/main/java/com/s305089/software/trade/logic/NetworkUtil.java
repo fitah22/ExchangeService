@@ -20,7 +20,7 @@ import static com.s305089.software.trade.model.TransactionType.*;
 public class NetworkUtil {
     private static String userURL;
 
-    public static boolean sendPayRecordsToUserAndHistoryService(List<PayRecord> records) {
+    public static boolean sendPayRecordsToUserService(List<PayRecord> records) {
         HttpEntity<Object> requestBody = new HttpEntity<>(records, createHeadersAsUser("tradeuser@s305089.com", "superSecretPassword"));
         return doRESTCall(userURL + "/payrecords", HttpMethod.POST, requestBody);
     }
