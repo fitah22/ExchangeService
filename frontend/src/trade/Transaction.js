@@ -17,9 +17,25 @@ export class Transaction extends React.Component {
         };
     }
 
-    handleSubmit = (values, e, formapi) => {
-
-        axios.post(tradeURL, values).then((response) => {
+    handleSubmit = (auth, formapi) => {
+        debugger;
+        if (auth === undefined) return;
+        const {amount, price} = this.state;
+        const {type, currency, unit} = this.props;
+        const order = {
+            username: auth.username,
+            password: auth.password,
+            order: {
+                userID: auth.username,
+                amount,
+                price,
+                market: `${currency}_${unit}`,
+                transactionType: type.toUpperCase()
+            }
+        };
+        debugger;
+        axios.post(tradeURL, order).then((response) => {
+            debugger;
             console.log("Trade OK");
         }).catch(() => {
             formapi.setError("error", "Something went wrong. Try again later.");
@@ -43,12 +59,12 @@ export class Transaction extends React.Component {
 
     renderBasedOnValue(context) {
         const {type, currency, unit} = this.props;
-        const {amount, price } = this.state;
+        const {amount, price} = this.state;
         let disabled = context.auth === undefined;
-        let total = amount*price;
+        let total = amount * price;
         let buttontext = context.auth === undefined ? "Login to trade" : `${type} ${currency}`;
 
-        return <Form onSubmit={this.handleSubmit}>
+        return <Form onSubmit={(values, e, formApi) => this.handleSubmit(context.auth, formApi)}>
             {
                 (formApi) => (
                     <FormStyled onSubmit={formApi.submitForm}>
@@ -58,7 +74,8 @@ export class Transaction extends React.Component {
                             <Col sm={10}>
                                 <InputGroup>
                                     <Input defaultValue={this.state.price} placeholder="Price" min="0" type="number"
-                                           name="price" field="price" step="0.01" onChange={(event) => this.handleNumberChange(event)}/>
+                                           name="price" field="price" step="0.01"
+                                           onChange={(event) => this.handleNumberChange(event)}/>
                                     <InputGroupAddon addonType="append">{unit}</InputGroupAddon>
                                 </InputGroup>
                             </Col>
@@ -68,7 +85,8 @@ export class Transaction extends React.Component {
                             <Label htmlFor="amount" sm={2}>Amount:</Label>
                             <Col sm={10}>
                                 <InputGroup>
-                                    <Input placeholder="Amount" type="number" min="0" name="amount" field="amount" step="0.01" onChange={(event) => this.handleNumberChange(event)}/>
+                                    <Input placeholder="Amount" type="number" min="0" name="amount" field="amount"
+                                           step="0.01" onChange={(event) => this.handleNumberChange(event)}/>
                                     <InputGroupAddon addonType="append">{currency}</InputGroupAddon>
                                 </InputGroup>
                             </Col>
@@ -84,7 +102,7 @@ export class Transaction extends React.Component {
                         </FormGroup>
                         <Input hidden type="text" value={type} readOnly/>
                         <div>{JSON.stringify(formApi.errors)}</div>
-                        <Button color="primary" type="submit" block  disabled={disabled}>{buttontext}</Button>
+                        <Button color="primary" type="submit" block disabled={disabled}>{buttontext}</Button>
                     </FormStyled>
                 )
             }
