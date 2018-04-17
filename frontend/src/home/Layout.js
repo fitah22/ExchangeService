@@ -30,7 +30,7 @@ export class Layout extends React.Component {
         };
 
         this.state = {
-            auth: {username:"hello",password:"123"},//undefined,
+            auth: undefined,//{username:"hello",password:"123"},//undefined,
             setAuthParams: this.setAuthParams,
             resetAuthParams: this.resetAuthParams,
             setClientData: this.setClientData
