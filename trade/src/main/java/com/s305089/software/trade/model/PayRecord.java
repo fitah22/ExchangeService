@@ -18,6 +18,9 @@ public class PayRecord {
     @JsonIgnore
     private BigDecimal tradedTotal;
 
+    public PayRecord() {
+    }
+
     public PayRecord(Order order, BigDecimal tradedAmount) {
         this.order = order;
         this.tradedTotal = tradedAmount;

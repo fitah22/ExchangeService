@@ -11,13 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import static com.s305089.software.trade.model.TransactionType.BUY;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -29,19 +25,12 @@ public class TradeController {
     private PayRecordDao payRecordDao;
 
     @GetMapping(value = "/payrecords")
-    public List<PayRecord> getpayrecord(){
-        Order order = new Order("hello", 15d, 1d, Market.BTC_USD, BUY);
-        order.setActive(true);
-        PayRecord a = new PayRecord(order,new BigDecimal(0.5));
-        return Collections.singletonList(a);
+    public Iterable<PayRecord> getpayrecord(){
+        return payRecordDao.findAll();
     }
 
     @GetMapping()
     public Iterable<Order> getOrders() {
-
-        Order order = new Order("hello", 15d, 1d, Market.BTC_USD, BUY);
-        order.setActive(true);
-        orderDao.save(order);
         return orderDao.findAll();
     }
 
