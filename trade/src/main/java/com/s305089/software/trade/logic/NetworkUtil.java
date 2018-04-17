@@ -18,28 +18,11 @@ import static com.s305089.software.trade.model.TransactionType.*;
 
 @Component
 public class NetworkUtil {
-    private static String historyURL;
     private static String userURL;
-
-    private static HttpHeaders createHeadersAsUser(String username, String password) {
-        String auth = username + ":" + password;
-
-        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("UTF-8")));
-        String authHeader = "Basic " + new String(encodedAuth);
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        httpHeaders.set("Authorization", authHeader);
-
-        return httpHeaders;
-    }
 
     public static boolean sendPayRecordsToUserAndHistoryService(List<PayRecord> records) {
         HttpEntity<Object> requestBody = new HttpEntity<>(records, createHeadersAsUser("tradeuser@s305089.com", "superSecretPassword"));
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> responseUser = restTemplate.exchange(userURL + "/payrecords", HttpMethod.POST, requestBody, String.class);
-
-        return responseUser.getStatusCode().is2xxSuccessful();
+        return doRESTCall(userURL + "/payrecords", HttpMethod.POST, requestBody);
     }
 
     public static boolean checkFunds(String username, String password, Order order) {
@@ -55,20 +38,17 @@ public class NetworkUtil {
 
 
         HttpEntity<Object> requestBody = new HttpEntity<>(createHeadersAsUser(username, password));
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, requestBody, String.class);
-
-        return response.getStatusCode().is2xxSuccessful();
+        return doRESTCall(url, HttpMethod.GET, requestBody);
     }
 
 
     public static boolean sendReserveOrder(String userId, Market market, BigDecimal total, TransactionType transactionType) {
         String url = userURL + "/reservefunds/";
         String currency;
-        if(transactionType == BUY){
+        if (transactionType == BUY) {
             //url += "buy/";
             currency = market.getSecondCurrency();
-        }else{
+        } else {
             //url += "sell/";
             currency = market.getMainCurrency();
         }
@@ -78,10 +58,31 @@ public class NetworkUtil {
         HttpHeaders header = createHeadersAsUser("tradeuser@s305089.com", "superSecretPassword");
 
 
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(buyOrder, header), String.class);
+        return doRESTCall(url, HttpMethod.POST, new HttpEntity<>(buyOrder, header));
+    }
 
-        return response.getStatusCode().is2xxSuccessful();
+    private static HttpHeaders createHeadersAsUser(String username, String password) {
+        String auth = username + ":" + password;
+
+        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("UTF-8")));
+        String authHeader = "Basic " + new String(encodedAuth);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.set("Authorization", authHeader);
+
+        return httpHeaders;
+    }
+
+    private static boolean doRESTCall(String url, HttpMethod method, HttpEntity entity) {
+        try {
+            //Will cast exception if statuscode > 400
+            new RestTemplate().exchange(url, method, entity, String.class);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
     }
 
     @Value("${historyservice.url}")
