@@ -9,11 +9,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +36,7 @@ public class ClientService {
         Optional<Account> account = client.getAccounts().stream().filter(a -> a.getCurrency() == currency).findFirst();
         if (account.isPresent()) {
             BigDecimal balance = account.get().getBalance();
-            if (balance.compareTo(amount) > 0) {
+            if (balance.compareTo(amount) >= 0) {
                 return ResponseEntity.ok().build();
             } else {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -83,7 +78,7 @@ public class ClientService {
                 return false;
             }
             clients.add(client);
-            depositAmountBasedOnPayroll(client, payRecord.getCurrency(), payRecord.getAmount());
+            depositAmountBasedOnPayroll(client, payRecord.getCurrency(), payRecord.getTotal());
         }
 
         HistoryConnector.logToLogService(new PayRecordMessage(payRecords), "/payrecords");

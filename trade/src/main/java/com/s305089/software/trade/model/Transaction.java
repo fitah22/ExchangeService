@@ -46,9 +46,10 @@ public class Transaction {
                 orderToFulfill.addAmountTraded(remainingAmount);
                 order.tradeRemaningAmount();
             }
-            payRecords.add(new PayRecord(order, remainingAmount));
+            BigDecimal tradedToalt = remainingAmount.multiply( orderToFulfill.getPrice());
+            payRecords.add(new PayRecord(order, tradedToalt));
         }
-        payRecords.add(new PayRecord(orderToFulfill, orderToFulfill.getTradedAmount()));
+        payRecords.add(new PayRecord(orderToFulfill, orderToFulfill.getTradedTotal()));
 
         return payRecords;
     }

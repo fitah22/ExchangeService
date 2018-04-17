@@ -7,7 +7,7 @@ public class PayRecordDTO {
 
     private String email;
     private String transactionType;
-    private BigDecimal amount;
+    private BigDecimal total;
     private Currency currency;
 
     public String getEmail() {
@@ -20,8 +20,8 @@ public class PayRecordDTO {
     }
 
 
-    public BigDecimal getAmount() {
-        return amount;
+    public BigDecimal getTotal() {
+        return total;
     }
 
 

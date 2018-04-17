@@ -31,7 +31,7 @@ public class NetworkUtil {
         if (order.getTransactionType() == BUY) {
             currency = order.getMarket().getSecondCurrency(); //Ex: If we buy BTC, check that we have enough USD
         } else {
-            currency = order.getMarket().getSecondCurrency(); //EX: If we sell BTC, check that we have enough BTC
+            currency = order.getMarket().getMainCurrency(); //EX: If we sell BTC, check that we have enough BTC
         }
 
         String url = userURL + "/user/funds/" + currency + "/" + order.getTotal();
@@ -83,11 +83,6 @@ public class NetworkUtil {
         }
 
         return true;
-    }
-
-    @Value("${historyservice.url}")
-    public void setHistoryUrl(String url) {
-        NetworkUtil.historyURL = url;
     }
 
     @Value("${userservice.url}")
