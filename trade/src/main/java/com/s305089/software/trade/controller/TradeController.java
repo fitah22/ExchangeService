@@ -1,6 +1,5 @@
 package com.s305089.software.trade.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.s305089.software.trade.dao.OrderDao;
 import com.s305089.software.trade.dao.PayRecordDao;
 import com.s305089.software.trade.logging.OrderLogger;
@@ -12,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +28,13 @@ public class TradeController {
     @Autowired
     private PayRecordDao payRecordDao;
 
+    @GetMapping(value = "/payrecords")
+    public List<PayRecord> getpayrecord(){
+        Order order = new Order("hello", 15d, 1d, Market.BTC_USD, BUY);
+        order.setActive(true);
+        PayRecord a = new PayRecord(order,new BigDecimal(0.5));
+        return Collections.singletonList(a);
+    }
 
     @GetMapping()
     public Iterable<Order> getOrders() {
@@ -52,6 +60,7 @@ public class TradeController {
 
         boolean reserveOK = NetworkUtil.sendReserveOrder(order.getUserID(), order.getMarket(), order.getTotal(), order.getTransactionType());
         if(!reserveOK) return   ResponseEntity.status(HttpStatus.FORBIDDEN).build();;
+        order = orderDao.save(order);
 
         //Preform transaction to match with bids (buys) and asks (sells)
         Transaction transaction = TradeLogic.performTransaction(order, orderDao.findByActiveTrue());

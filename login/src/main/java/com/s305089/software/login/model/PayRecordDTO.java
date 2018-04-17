@@ -5,13 +5,13 @@ import java.math.BigDecimal;
 //Could possible merge with ClientOrderDTO
 public class PayRecordDTO {
 
-    private String userId;
+    private String email;
     private String transactionType;
     private BigDecimal amount;
     private Currency currency;
 
-    public String getUserID() {
-        return userId;
+    public String getEmail() {
+        return email;
     }
 
 

@@ -1,8 +1,9 @@
 package com.s305089.software.login.controller;
 
 import com.s305089.software.login.dao.ClientService;
-import com.s305089.software.login.logging.ErrorLog;
+import com.s305089.software.login.logging.ErrorMessage;
 import com.s305089.software.login.logging.HistoryConnector;
+import com.s305089.software.login.logging.PayRecordMessage;
 import com.s305089.software.login.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -81,7 +82,7 @@ public class ClientController {
     }
 
     @GetMapping(value = "/user/funds/{currency}/{amount}")
-    public ResponseEntity getFunds(@PathVariable Currency currency, @PathVariable BigDecimal amount, Principal principal) {
+    public ResponseEntity checkFunds(@PathVariable Currency currency, @PathVariable BigDecimal amount, Principal principal) {
         Client client = clientService.findByEmail(principal.getName());
         if (client != null) {
             Optional<Account> account = client.getAccounts().stream().filter(a -> a.getCurrency() == currency).findFirst();
@@ -118,7 +119,7 @@ public class ClientController {
                 account.withdraw(amount);
                 clientService.saveWithoutPassword(client);
             } catch (IllegalAccountTransactionException e) {
-                HistoryConnector.logToLogService(new ErrorLog(client.getEmail(), e.getMessage()), "/error");
+                HistoryConnector.logToLogService(new ErrorMessage(client.getEmail(), e.getMessage()), "/error");
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
             return ResponseEntity.ok().build();
@@ -127,12 +128,6 @@ public class ClientController {
     }
 
 
-    public void reserveBasedOnSellOrder(Client client, Currency currency, BigDecimal amount) {
-        Optional<Account> accountOpt = client.getAccounts().stream().filter(a -> a.getCurrency().equals(currency)).findFirst();
-        Account account = accountOpt.orElseGet(() -> Account.newFromCurrency(currency));
-        account.deposit(amount);
-    }
-
 
     @PostMapping(value = "/payrecords")
     public ResponseEntity executePayRecords(@RequestBody List<PayRecordDTO> payRecords, Principal principal) {
@@ -140,18 +135,25 @@ public class ClientController {
 
         List<Client> clients = new ArrayList<>(payRecords.size());
         for (PayRecordDTO payRecord : payRecords) {
-            Client client = clientService.findByEmail(payRecord.getUserID());
+            Client client = clientService.findByEmail(payRecord.getEmail());
             if (client == null) {
                 //This should really not happen
-                HistoryConnector.logToLogService(new ErrorLog(payRecord.getUserID(), "Not found when executing pay records"), "/error");
+                HistoryConnector.logToLogService(new ErrorMessage(payRecord.getEmail(), "Not found when executing pay records"), "/error");
                 return ResponseEntity.notFound().build();
             }
-
-            reserveBasedOnSellOrder(client, payRecord.getCurrency(), payRecord.getAmount());
+            clients.add(client);
+            depositAmountBasedOnPayroll(client, payRecord.getCurrency(), payRecord.getAmount());
         }
 
+        HistoryConnector.logToLogService(new PayRecordMessage(payRecords), "/payrecords");
         clientService.saveAll(clients);
         return ResponseEntity.ok().build();
+    }
+
+    private void depositAmountBasedOnPayroll(Client client, Currency currency, BigDecimal amount) {
+        Optional<Account> accountOpt = client.getAccounts().stream().filter(a -> a.getCurrency().equals(currency)).findFirst();
+        Account account = accountOpt.orElseGet(() -> Account.newFromCurrency(currency));
+        account.deposit(amount);
     }
 
     private boolean isNotTradeModule(Principal principal) {

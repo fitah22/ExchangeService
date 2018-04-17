@@ -15,6 +15,7 @@ public class PayRecord {
     @JsonIgnore
     @ManyToOne
     private Order order;
+    @JsonIgnore
     private BigDecimal tradedAmount;
 
     public PayRecord(Order order, BigDecimal tradedAmount) {
@@ -22,7 +23,7 @@ public class PayRecord {
         this.tradedAmount = tradedAmount;
     }
 
-    @JsonProperty(value = "userId")
+    @JsonProperty(value = "email")
     public String getUserID() {
         return order.getUserID();
     }
@@ -32,7 +33,7 @@ public class PayRecord {
         return order.getTransactionType();
     }
 
-    @JsonProperty(value = "tradedAmount")
+    @JsonProperty(value = "amount")
     public BigDecimal getTradedAmount() {
         return tradedAmount;
     }

@@ -35,13 +35,11 @@ public class NetworkUtil {
     }
 
     public static boolean sendPayRecordsToUserAndHistoryService(List<PayRecord> records) {
-
-
         HttpEntity<Object> requestBody = new HttpEntity<>(records, createHeadersAsUser("tradeuser@s305089.com", "superSecretPassword"));
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> responseUser = restTemplate.exchange(userURL + "/payrecords", HttpMethod.POST, requestBody, String.class);
-        ResponseEntity<String> responseHistory = restTemplate.exchange(historyURL + "/payrecords", HttpMethod.POST, requestBody, String.class);
-        return true;
+
+        return responseUser.getStatusCode().is2xxSuccessful();
     }
 
     public static boolean checkFunds(String username, String password, Order order) {
@@ -68,10 +66,10 @@ public class NetworkUtil {
         String url = userURL + "/reservefunds/";
         String currency;
         if(transactionType == BUY){
-            url += "buy/";
+            //url += "buy/";
             currency = market.getSecondCurrency();
         }else{
-            url += "sell/";
+            //url += "sell/";
             currency = market.getMainCurrency();
         }
 
