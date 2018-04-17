@@ -29,7 +29,6 @@ export class TradeEngine extends React.Component {
         const apiUrl = `https://min-api.cryptocompare.com/data/price?fsym=${main}&tsyms=${secondary}`;
         axios.get(apiUrl).then(response => {
             if (response.status === 200) {
-                debugger;
                 this.setState({
                     currentMarketPrice: response.data[secondary]
                 });

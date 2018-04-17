@@ -13,7 +13,6 @@ export class Transaction extends React.Component {
         this.state = {
             amount: "",
             price: "",
-            total: "",
             currentMarketPrice: undefined
         };
     }
@@ -28,10 +27,9 @@ export class Transaction extends React.Component {
     };
 
     handleNumberChange(event) {
-        debugger;
         const {value, name} = event.currentTarget;
         this.setState({
-
+            [name]: Number(value)
         });
     }
 
@@ -45,7 +43,9 @@ export class Transaction extends React.Component {
 
     renderBasedOnValue(context) {
         const {type, currency, unit} = this.props;
+        const {amount, price } = this.state;
         let disabled = context.auth === undefined;
+        let total = amount*price;
         let buttontext = context.auth === undefined ? "Login to trade" : `${type} ${currency}`;
 
         return <Form onSubmit={this.handleSubmit}>
@@ -77,7 +77,7 @@ export class Transaction extends React.Component {
                             <Label htmlFor="total" sm={2}>Total: </Label>
                             <Col sm={10}>
                                 <InputGroup>
-                                    <Input value={this.state.total} type="number" field="total" name="total" readOnly/>
+                                    <Input value={total} type="number" field="total" name="total" readOnly/>
                                     <InputGroupAddon addonType="append">{unit}</InputGroupAddon>
                                 </InputGroup>
                             </Col>
