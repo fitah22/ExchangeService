@@ -54,7 +54,7 @@ export class TradeEngine extends React.Component {
         return <React.Fragment>
             <div className={"col-md-12"}>
                 <h2>{main}/{secondary}</h2>
-                <p>Current market price: 1 {main} = {this.state.currentMarketPrice} {secondary}</p>
+                {this.state.currentMarketPrice && <p>Current market price: 1 {main} = {this.state.currentMarketPrice} {secondary}</p>}
             </div>
             <div className={"col-md-12"}>
                 {this.renderMarkets()}

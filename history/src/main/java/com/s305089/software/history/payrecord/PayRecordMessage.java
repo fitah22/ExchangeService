@@ -9,7 +9,7 @@ import java.util.Currency;
 import java.util.Date;
 
 @Entity
-class PayRecordMessage {
+public class PayRecordMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
