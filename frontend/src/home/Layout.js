@@ -25,8 +25,9 @@ export class Layout extends React.Component {
 
         this.setClientData = (clientdata) => {
             this.setState({
-                client: clientdata}
-                );
+                    client: clientdata
+                }
+            );
         };
 
         this.state = {
@@ -43,9 +44,7 @@ export class Layout extends React.Component {
             <NavigationMenu isAuth={this.state.auth !== undefined}/>
 
             <div className='container-fluid'>
-                <div className='row'>
-                        {this.props.children}
-                </div>
+                {this.props.children}
             </div>
         </TokenContext.Provider>;
     }

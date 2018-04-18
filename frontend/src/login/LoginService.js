@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {TokenContext} from "../Contexts";
+import {Row, Col} from 'reactstrap';
 import {Signup} from "./Signup";
 import {Login} from "./Login";
 import {Client} from "./Client";
@@ -21,24 +22,26 @@ export class LoginService extends React.Component {
 
         if (!auth) {
             return (
-                <React.Fragment>
-                    <div className={"col-md-6"}>
+                <Row>
+                    <Col md={6}>
                         <h3>Login</h3>
                         <Login setParams={setAuthParams} setClientData={setClientData}/>
-                    </div>
-                    <div className={"col-md-6"}>
+                    </Col>
+                    <Col md={6}>
                         <h3>Signup</h3>
                         <Signup setParams={setAuthParams} setClientData={setClientData}/>
-                    </div>
-                </React.Fragment>
+                    </Col>
+                </Row>
             )
         }
         return (
-            <div className={"col-md-12"}>
-                <Client data={client} />
-                <button onClick={() => resetAuthParams()} className={"btn btn-md"}>Log out</button>
+            <Row>
+                <Col md={12}>
+                    <Client data={client}/>
+                    <button onClick={() => resetAuthParams()} className={"btn btn-md"}>Log out</button>
 
-            </div>
+                </Col>
+            </Row>
         )
     }
 

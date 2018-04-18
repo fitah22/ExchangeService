@@ -1,7 +1,8 @@
 package com.s305089.software.trade.model;
 
 public enum Market {
-    BTC_USD("BTC", "USD");
+    BTC_USD("BTC", "USD"),
+    ETH_USD("ETH", "USD");
 
     private String mainCurrency;
     private String secondCurrency;

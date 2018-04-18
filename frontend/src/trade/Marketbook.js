@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {tradeURL} from "../ServiceURLS";
-import {Table} from 'reactstrap';
+import {Table, Col} from 'reactstrap';
 import axios from "axios/index";
 
 export class Marketbook extends React.Component {
@@ -49,17 +49,20 @@ export class Marketbook extends React.Component {
     render() {
         const {loading, loadingFail, sell, buy} = this.state;
         if (loading) {
-            return <p>Loading data...</p>
+            return <Col md={12}><p>Loading market book...</p></Col>
         } else if (loadingFail) {
-            return <p>Something went wrong. Please try again.</p>
+            return <Col md={12}><p>Something went wrong with loading market book. Please try again.</p></Col>
         } else {
             return (
                 <React.Fragment>
-                    <h3>Buy</h3>
-                    {Marketbook.getTable(buy)}
-
-                    <h3>Sell</h3>
-                    {Marketbook.getTable(sell)}
+                    <Col md={6}>
+                        <h4>Buy</h4>
+                        {Marketbook.getTable(buy)}
+                    </Col>
+                    <Col md={6}>
+                        <h4>Sell</h4>
+                        {Marketbook.getTable(sell)}
+                    </Col>
                 </React.Fragment>
             )
         }
