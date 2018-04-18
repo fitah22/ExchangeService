@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Form, Text} from 'react-form';
-import {Button, Form as FormStyled, FormGroup, Label,  Modal, ModalHeader, ModalBody} from 'reactstrap';
+import {Button, Form as FormStyled, FormGroup, Label, Modal, ModalHeader, ModalBody} from 'reactstrap';
 import axios from "axios";
 import {loginURL} from "../ServiceURLS";
 
@@ -37,8 +37,8 @@ export class Login extends React.Component {
         const textStyle = {className: "form-control"};
         const {open, toggle} = this.props;
         return (
-            <Modal isOpen={open}>
-                <ModalHeader>
+            <Modal isOpen={open} toggle={toggle}>
+                <ModalHeader toggle={toggle}>
                     Login
                 </ModalHeader>
                 <ModalBody>
@@ -57,7 +57,7 @@ export class Login extends React.Component {
                                               required {...textStyle}/>
                                     </FormGroup>
                                     <Button color="primary" type="submit">Login</Button>
-                                    <Button color="secondary" className={"ml-1"} onClick={() => toggle()}>Cancel</Button>
+                                    <Button color="secondary" className={"ml-1"} onClick={toggle}>Cancel</Button>
                                     <div>{JSON.stringify(formApi.errors)}</div>
                                 </FormStyled>
                             )

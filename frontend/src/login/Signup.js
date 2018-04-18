@@ -31,8 +31,8 @@ export class Signup extends React.Component {
         const textStyle = {className: "form-control"};
         const {open, toggle} = this.props;
         return (
-            <Modal isOpen={open}>
-                <ModalHeader>
+            <Modal isOpen={open} toggle={toggle}>
+                <ModalHeader toggle={toggle}>
                     Sign up
                 </ModalHeader>
                 <ModalBody>
@@ -61,7 +61,7 @@ export class Signup extends React.Component {
                                     <label htmlFor="agreesToTerms">Terms and conditions</label>
                                 </FormGroup>
                                 <Button color="primary" type="submit">Sign up</Button>
-                                <Button color="secondary" className={"ml-1"} onClick={() => toggle()}>Cancel</Button>
+                                <Button color="secondary" className={"ml-1"} onClick={toggle}>Cancel</Button>
                             </FormStyled>
                         )
                         }
