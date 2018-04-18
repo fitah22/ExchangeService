@@ -34,6 +34,15 @@ public class TradeController {
         return orderDao.findAll();
     }
 
+    @GetMapping(value = "/{market}")
+    public Iterable<Order> getOrders(@PathVariable Market market) {
+        return orderDao.findByMarket(market);
+    }
+    @GetMapping(value = "/{market}/{transactionType}")
+    public Iterable<Order> getOrders(@PathVariable Market market, @PathVariable TransactionType transactionType) {
+        return orderDao.findByMarketAndTransactionType(market, transactionType);
+    }
+
 
     @PostMapping
     public ResponseEntity makeOrder(@RequestBody OrderDTO orderDTO) {

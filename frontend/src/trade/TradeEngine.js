@@ -1,8 +1,9 @@
 import * as React from 'react';
-import {Button, Form as FormStyled, FormGroup, Label, Input, InputGroup, InputGroupAddon, Col} from 'reactstrap';
+import {Button, Col} from 'reactstrap';
 import {Transaction} from "./Transaction";
 import {tradeURL} from "../ServiceURLS";
 import axios from "axios/index";
+import {Marketbook} from "./Marketbook";
 
 export class TradeEngine extends React.Component {
 
@@ -16,16 +17,18 @@ export class TradeEngine extends React.Component {
     }
 
     componentDidMount() {
-        const {main, secondary} = this.getCurrenciesFromMarket();
-
         axios.get(tradeURL + "markets").then(response => {
-            console.log(response);
             this.setState({
                 markets: response.data
             });
         });
 
 
+        this.getCurrentPrice();
+    }
+
+    getCurrentPrice() {
+        const {main, secondary} = this.getCurrenciesFromMarket();
         const apiUrl = `https://min-api.cryptocompare.com/data/price?fsym=${main}&tsyms=${secondary}`;
         axios.get(apiUrl).then(response => {
             if (response.status === 200) {
@@ -50,6 +53,7 @@ export class TradeEngine extends React.Component {
 
 
     render() {
+        const {currentMarket }= this.state;
         const {main, secondary} = this.getCurrenciesFromMarket();
         return <React.Fragment>
             <div className={"col-md-12"}>
@@ -59,6 +63,10 @@ export class TradeEngine extends React.Component {
             <div className={"col-md-12"}>
                 {this.renderMarkets()}
             </div>
+            <Col md="12">
+                <Marketbook market={currentMarket}/>
+            </Col>
+
             <div className={"col-md-6"}>
                 <Transaction type={"Buy"} currency={main} unit={secondary}/>
             </div>
