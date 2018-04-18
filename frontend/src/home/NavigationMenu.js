@@ -15,39 +15,49 @@ export class NavigationMenu extends React.Component {
                                 Home
                             </NavLink>
                         </li>
-                        {this.renderLinks()}
+                        <li>
+                            <NavLink to={ '/user' } activeClassName='active'>
+                                User
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink to={ '/trade' } activeClassName='active'>
+                                Trade
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink to={ '/history' } activeClassName='active'>
+                                History
+                            </NavLink>
+                        </li>
+                        {this.renderLogin()}
                     </ul>
                 </div>
         </nav>;
     }
 
-    renderLinks() {
-        const {isAuth} = this.props;
+    renderLogin() {
+        const {isAuth, login, signup, restAuth} = this.props;
         if(isAuth){
             return (<React.Fragment>
                 <li>
-                    <NavLink to={ '/user' } activeClassName='active'>
-                        User
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink to={ '/trade' } activeClassName='active'>
-                        Trade
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink to={ '/history' } activeClassName='active'>
-                        History
-                    </NavLink>
+                    <Link to="#" onClick={restAuth}>
+                        Logout
+                    </Link>
                 </li>
             </React.Fragment>)
         }
 
         return (<React.Fragment>
             <li>
-                <NavLink to={ '/user' } activeClassName='active'>
-                    Log in or register
-                </NavLink>
+                <Link to="#" onClick={login}>
+                    Login
+                </Link>
+            </li>
+            <li>
+                <Link to="#" onClick={signup}>
+                    Sign up
+                </Link>
             </li>
         </React.Fragment>)
 

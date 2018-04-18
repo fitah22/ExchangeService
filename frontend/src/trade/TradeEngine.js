@@ -95,9 +95,9 @@ export class TradeEngine extends React.Component {
             return (<React.Fragment>
                 <p>Markets:</p>
                 {
-                    markets.map(value => {
+                    markets.map((value, i) => {
                         const {main, secondary} = this.getCurrenciesFromMarket(value);
-                        return <Button>{main}/{secondary}</Button>
+                        return <Button key={i}>{main}/{secondary}</Button>
                     })
                 }
             </React.Fragment>)

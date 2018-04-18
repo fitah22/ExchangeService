@@ -38,7 +38,7 @@ export class LoginService extends React.Component {
     }
 
     renderBasedOnValue = (context) => {
-        const {auth, client, setAuthParams, resetAuthParams, setClientData} = context;
+        const {auth, client, resetAuthParams, toggleSignup, toggleLogin} = context;
         const {loginOpen, signupOpen} = this.state;
         if (!auth) {
             return (<React.Fragment>
@@ -48,10 +48,8 @@ export class LoginService extends React.Component {
                             Please login or sign up.
                             <br/>
                             <Button className={"mr-2"} color={"primary"}
-                                    onClick={() => this.toggleLogin()}>Login</Button>
-                            <Button color={"primary"} onClick={() => this.toggleSignup()}>Sign up</Button>
-                            <Login setParams={setAuthParams} setClientData={setClientData} open={loginOpen} toggle={() =>this.toggleLogin()}/>
-                            <Signup setParams={setAuthParams} setClientData={setClientData} open={signupOpen} toggle={() => this.toggleSignup()}/>
+                                    onClick={() => toggleLogin()}>Login</Button>
+                            <Button color={"primary"} onClick={() => toggleSignup()}>Sign up</Button>
                         </Col>
                     </Row>
                 </React.Fragment>
