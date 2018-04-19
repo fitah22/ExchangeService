@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Form, Text, Checkbox} from 'react-form';
 import axios from "axios";
+import {SyncLoader} from "react-spinners";
 import {loginURL} from "../ServiceURLS";
 import {Button, Form as FormStyled, FormGroup, Label, Modal, ModalHeader, ModalBody} from 'reactstrap';
 
@@ -15,15 +16,25 @@ export class Signup extends React.Component {
         super(props);
         this.setParams = this.props.setParams;
         this.setClientData = this.props.setClientData;
+        this.state = {
+            loading: false
+        };
     }
 
 
     handleSubmit = (values, e, formapi) => {
+        this.setState({
+            loading:true
+        });
         axios.post(loginURL + "signup", values).then(response => {
             this.setParams(values.email, values.password);
             this.setClientData(response.data);
         }).catch(error => {
             formapi.setError("email", "Email already in use");
+        }).finally(() => {
+            this.setState({
+                loading:false
+            });
         });
     };
 
@@ -60,7 +71,8 @@ export class Signup extends React.Component {
                                     <Checkbox field="agreesToTerms" required/>
                                     <label htmlFor="agreesToTerms">Terms and conditions</label>
                                 </FormGroup>
-                                <Button color="primary" type="submit">Sign up</Button>
+                                {this.state.loading && <Button color="primary" disabled={true}><SyncLoader size={10}/></Button>}
+                                {!this.state.loading && <Button color="primary" type="submit">Sign up</Button>}
                                 <Button color="secondary" className={"ml-1"} onClick={toggle}>Cancel</Button>
                             </FormStyled>
                         )

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Form, Text} from 'react-form';
 import {Button, Form as FormStyled, FormGroup, Label, Modal, ModalHeader, ModalBody} from 'reactstrap';
+import {SyncLoader} from "react-spinners";
 import axios from "axios";
 import {loginURL} from "../ServiceURLS";
 
@@ -15,9 +16,15 @@ export class Login extends React.Component {
         super(props);
         this.setParams = this.props.setParams;
         this.setClientData = this.props.setClientData;
+        this.state = {
+          loading: false
+        };
     }
 
     handleSubmit = (values, e, formapi) => {
+        this.setState({
+            loading:true
+        });
         const config = {
             auth: {
                 username: values.email,
@@ -30,12 +37,17 @@ export class Login extends React.Component {
             console.log("Params and client data set");
         }).catch(() => {
             formapi.setError("email", "Email already in use");
+        }).finally(() => {
+            this.setState({
+                loading:false
+            });
         });
     };
 
     render() {
         const textStyle = {className: "form-control"};
         const {open, toggle} = this.props;
+        debugger;
         return (
             <Modal isOpen={open} toggle={toggle}>
                 <ModalHeader toggle={toggle}>
@@ -56,7 +68,8 @@ export class Login extends React.Component {
                                         <Text field="password" type="password" placeholder="Password"
                                               required {...textStyle}/>
                                     </FormGroup>
-                                    <Button color="primary" type="submit">Login</Button>
+                                    {this.state.loading && <Button color="primary" disabled={true}><SyncLoader size={10}/></Button>}
+                                    {!this.state.loading && <Button color="primary" type="submit">Login</Button>}
                                     <Button color="secondary" className={"ml-1"} onClick={toggle}>Cancel</Button>
                                     <div>{JSON.stringify(formApi.errors)}</div>
                                 </FormStyled>
