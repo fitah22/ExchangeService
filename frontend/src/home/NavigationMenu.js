@@ -1,64 +1,83 @@
 import * as React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import {Link} from 'react-router-dom';
+import {Navbar, NavbarBrand, Nav, NavItem, NavLink, NavbarToggler, Collapse} from 'reactstrap';
+
 
 export class NavigationMenu extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.toggleNavbar = this.toggleNavbar.bind(this);
+        this.state = {
+            collapsed: true
+        };
+    }
+
+    toggleNavbar() {
+        this.setState({
+            collapsed: !this.state.collapsed
+        });
+    }
+
     render() {
-        return <nav className="navbar navbar-inverse navbar-fixed-top">
-                <div className='navbar-header'>
-                    <Link className='navbar-brand' to={ '/' }>Final project</Link>
-                </div>
+        return <div>
+            <Navbar expand="md">
+                <NavbarBrand tag={Link} to="/">Final project</NavbarBrand>
                 <div className='clearfix'/>
-                <div className='navbar-collapse'>
-                    <ul className='nav navbar-nav'>
-                        <li>
-                            <NavLink to={ '/' } exact activeClassName='active'>
+                <NavbarToggler onClick={this.toggleNavbar} className="mr-2"/>
+                <Collapse isOpen={!this.state.collapsed} navbar>
+                    <Nav navbar>
+
+                        <NavItem>
+                            <NavLink tag={Link} to="/">
                                 Home
                             </NavLink>
-                        </li>
-                        <li>
-                            <NavLink to={ '/user' } activeClassName='active'>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink tag={Link} to={'/user'}>
                                 User
                             </NavLink>
-                        </li>
-                        <li>
-                            <NavLink to={ '/trade' } activeClassName='active'>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink tag={Link} to={'/trade'}>
                                 Trade
                             </NavLink>
-                        </li>
-                        <li>
-                            <NavLink to={ '/history' } activeClassName='active'>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink tag={Link} to={'/history'}>
                                 History
                             </NavLink>
-                        </li>
+                        </NavItem>
                         {this.renderLogin()}
-                    </ul>
-                </div>
-        </nav>;
+                    </Nav>
+                </Collapse>
+            </Navbar>
+        </div>
     }
 
     renderLogin() {
         const {isAuth, login, signup, restAuth} = this.props;
-        if(isAuth){
+        if (isAuth) {
             return (<React.Fragment>
-                <li>
-                    <Link to="#" onClick={restAuth}>
+                <NavItem>
+                    <NavLink tag={Link} to="#" onClick={restAuth}>
                         Logout
-                    </Link>
-                </li>
+                    </NavLink>
+                </NavItem>
             </React.Fragment>)
         }
 
         return (<React.Fragment>
-            <li>
-                <Link to="#" onClick={login}>
+            <NavItem>
+                <NavLink tag={Link} to="#" onClick={login}>
                     Login
-                </Link>
-            </li>
-            <li>
-                <Link to="#" onClick={signup}>
+                </NavLink>
+            </NavItem>
+            <NavItem>
+                <NavLink tag={Link} to="#" onClick={signup}>
                     Sign up
-                </Link>
-            </li>
+                </NavLink>
+            </NavItem>
         </React.Fragment>)
 
 
