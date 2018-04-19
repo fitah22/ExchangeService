@@ -5,10 +5,6 @@ import {Client} from "./Client";
 
 export class LoginService extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <TokenContext.Consumer>
