@@ -3,7 +3,7 @@ import {tradeURL} from "../ServiceURLS";
 import {Table, Col} from 'reactstrap';
 import axios from "axios/index";
 
-export class Marketbook extends React.Component {
+export class Tradebook extends React.Component {
 
     constructor(props) {
         super(props);
@@ -29,15 +29,13 @@ export class Marketbook extends React.Component {
             axios.get(tradeURL + market.toUpperCase() + "/SELL"),
             axios.get(tradeURL + market.toUpperCase() + "/BUY")
         ]).then(([sell, buy]) => {
-            debugger;
             this.setState({
                 sell: sell.data,
                 buy: buy.data,
                 loading: false,
                 loadingFail: false
             });
-        }).catch((e) => {
-            debugger;
+        }).catch(() => {
             this.setState({
                 loading: false,
                 loadingFail: true,
@@ -57,11 +55,11 @@ export class Marketbook extends React.Component {
                 <React.Fragment>
                     <Col md={6}>
                         <h4>Buy</h4>
-                        {Marketbook.getTable(buy)}
+                        {Tradebook.getTable(buy)}
                     </Col>
                     <Col md={6}>
                         <h4>Sell</h4>
-                        {Marketbook.getTable(sell)}
+                        {Tradebook.getTable(sell)}
                     </Col>
                 </React.Fragment>
             )
