@@ -47,7 +47,6 @@ export class Login extends React.Component {
     render() {
         const textStyle = {className: "form-control"};
         const {open, toggle} = this.props;
-        debugger;
         return (
             <Modal isOpen={open} toggle={toggle}>
                 <ModalHeader toggle={toggle}>

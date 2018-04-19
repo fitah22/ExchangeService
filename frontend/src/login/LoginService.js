@@ -1,32 +1,13 @@
 import * as React from 'react';
 import {TokenContext} from "../Contexts";
 import {Row, Col, Button} from 'reactstrap';
-import {Signup} from "./Signup";
-import {Login} from "./Login";
 import {Client} from "./Client";
 
 export class LoginService extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            loginOpen: false,
-            signupOpen: false
-        };
     }
-
-    toggleLogin() {
-        this.setState({
-            loginOpen: !this.state.loginOpen
-        });
-    }
-
-    toggleSignup() {
-        this.setState({
-            signupOpen: !this.state.signupOpen
-        });
-    }
-
 
     render() {
         return (
@@ -39,7 +20,6 @@ export class LoginService extends React.Component {
 
     renderBasedOnValue = (context) => {
         const {auth, client, resetAuthParams, toggleSignup, toggleLogin} = context;
-        const {loginOpen, signupOpen} = this.state;
         if (!auth) {
             return (<React.Fragment>
                     <Row>
