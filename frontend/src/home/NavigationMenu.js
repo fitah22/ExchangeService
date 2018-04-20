@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Link} from 'react-router-dom';
+import {NavLink as Link} from 'react-router-dom';
 import {Navbar, NavbarBrand, Nav, NavItem, NavLink, NavbarToggler, Collapse} from 'reactstrap';
 
 
@@ -29,7 +29,7 @@ export class NavigationMenu extends React.Component {
                     <Nav navbar>
 
                         <NavItem>
-                            <NavLink tag={Link} to="/" activeClassName="active">
+                            <NavLink tag={Link} to={"/"} exact activeClassName="active">
                                 Home
                             </NavLink>
                         </NavItem>

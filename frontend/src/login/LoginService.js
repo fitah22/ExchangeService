@@ -15,7 +15,7 @@ export class LoginService extends React.Component {
     }
 
     renderBasedOnValue = (context) => {
-        const {auth, client, resetAuthParams, toggleSignup, toggleLogin} = context;
+        const {auth, client, resetAuthParams, toggleSignup, toggleLogin, updatePassword} = context;
         if (!auth) {
             return (<React.Fragment>
                     <Row>
@@ -34,7 +34,7 @@ export class LoginService extends React.Component {
         return (
             <Row>
                 <Col md={12}>
-                    <Client data={client}/>
+                    <Client data={client} auth={auth} onUpdatePassword={updatePassword}/>
                     <button onClick={() => resetAuthParams()} className={"btn btn-md"}>Log out</button>
 
                 </Col>

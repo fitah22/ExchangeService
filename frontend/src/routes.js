@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Route} from "react-router-dom";
-import {Layout} from "./home/Layout";
+import {Layout} from "./Layout";
 import {Home} from "./home/Home";
 import {LoginService} from "./login/LoginService";
 import {TradeHome} from "./trade/TradeHome";

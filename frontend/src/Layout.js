@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {NavigationMenu} from './NavigationMenu';
-import {TokenContext} from "../Contexts";
-import {Signup} from "../login/Signup";
-import {Login} from "../login/Login";
+import {NavigationMenu} from './home/NavigationMenu';
+import {TokenContext} from "./Contexts";
+import {Signup} from "./login/Signup";
+import {Login} from "./login/Login";
 
 
 export class Layout extends React.Component {
@@ -10,37 +10,14 @@ export class Layout extends React.Component {
     constructor(props) {
         super(props);
 
-        this.resetAuthParams = () => {
-            this.setState({
-                auth: undefined,
-                loginOpen: false,
-                signupOpen: false,
-            });
-        };
-
-        this.setAuthParams = (username, password) => {
-            this.setState({
-                auth: {
-                    username,
-                    password
-                },
-                loginOpen: false,
-                signupOpen: false,
-            });
-        };
-
-        this.setClientData = (clientdata) => {
-            this.setState({
-                    client: clientdata
-                }
-            );
-        };
 
         this.state = {
-            auth: undefined,//{username:"hello",password:"123"},//undefined,
-            setAuthParams: this.setAuthParams,
-            resetAuthParams: this.resetAuthParams,
-            setClientData: this.setClientData,
+            auth: undefined,
+            setAuthParams: this.setAuthParams.bind(this),
+            resetAuthParams: this.resetAuthParams.bind(this),
+            client: undefined,
+            setClientData: this.setClientData.bind(this),
+            updatePassword: this.updatePassword.bind(this),
             loginOpen: false,
             signupOpen: false,
             toggleLogin: this.toggleLogin.bind(this),
@@ -48,6 +25,42 @@ export class Layout extends React.Component {
         };
 
     }
+
+    setAuthParams(username, password) {
+        this.setState({
+            auth: {
+                username,
+                password
+            },
+            loginOpen: false,
+            signupOpen: false,
+        });
+    };
+
+    updatePassword(password) {
+        const {auth}= this.state;
+        const newAuth = auth;
+        newAuth.password = password;
+        this.setState({
+            auth: newAuth
+        });
+    }
+
+    resetAuthParams() {
+        this.setState({
+            auth: undefined,
+            loginOpen: false,
+            signupOpen: false,
+        });
+    };
+
+    setClientData(clientdata) {
+        debugger;
+        this.setState({
+                client: clientdata
+            }
+        );
+    };
 
     toggleLogin() {
         this.setState({

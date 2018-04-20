@@ -4,7 +4,10 @@ import com.s305089.software.login.dao.ClientService;
 import com.s305089.software.login.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -15,35 +18,38 @@ public class ClientController {
     ClientService clientService;
 
     //a. User can change their password
-    @PostMapping(value = "/user/{email}/password")
-    public Object updatePassword(@PathVariable String email, @RequestBody String password) {
+    @PatchMapping(value = "/user/password")
+    public ResponseEntity updatePassword(@RequestBody String password, Principal principal) {
+        String email = principal.getName();
         Client client = clientService.findByEmail(email);
         if (client != null) {
             client.setPassword(password);
-            return clientService.save(client);
+            return ResponseEntity.ok(clientService.save(client));
         }
-        return HttpStatus.NOT_FOUND;
+        return ResponseEntity.notFound().build();
     }
 
     //b. Address information update
-    @PostMapping(value = "/user/{email}")
-    public Object updateAddress(@PathVariable String email, @RequestBody String address) {
+    @PatchMapping(value = "/user/address")
+    public ResponseEntity updateAddress(@RequestBody String address, Principal principal) {
+        String email = principal.getName();
         Client client = clientService.findByEmail(email);
         if (client != null) {
             client.setAddress(address);
-            return clientService.saveWithoutPassword(client);
+            return ResponseEntity.ok(clientService.saveWithoutPassword(client));
         }
-        return HttpStatus.NOT_FOUND;
+        return ResponseEntity.notFound().build();
     }
 
     //c. Information about the balance info(crypto)
-    @GetMapping(value = "/user/{email}/balance")
-    public Object accountBalance(@PathVariable String email) {
+    @GetMapping(value = "/user/balance")
+    public ResponseEntity accountBalance(Principal principal) {
+        String email = principal.getName();
         Client client = clientService.findByEmail(email);
         if (client != null) {
-            return client.getAccounts();
+            return ResponseEntity.ok(client.getAccounts());
         }
-        return HttpStatus.NOT_FOUND;
+        return ResponseEntity.notFound().build();
     }
 
 }
