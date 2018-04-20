@@ -21,30 +21,30 @@ export class NavigationMenu extends React.Component {
 
     render() {
         return <div>
-            <Navbar expand="md">
+            <Navbar expand="md" color="dark" dark>
                 <NavbarBrand tag={Link} to="/">Final project</NavbarBrand>
                 <div className='clearfix'/>
-                <NavbarToggler onClick={this.toggleNavbar} className="mr-2"/>
+                <NavbarToggler  onClick={this.toggleNavbar} className="mr-2" />
                 <Collapse isOpen={!this.state.collapsed} navbar>
                     <Nav navbar>
 
                         <NavItem>
-                            <NavLink tag={Link} to="/">
+                            <NavLink tag={Link} to="/" activeClassName="active">
                                 Home
                             </NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink tag={Link} to={'/user'}>
+                            <NavLink tag={Link} to={'/user'} activeClassName="active">
                                 User
                             </NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink tag={Link} to={'/trade'}>
+                            <NavLink tag={Link} to={'/trade'} activeClassName="active">
                                 Trade
                             </NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink tag={Link} to={'/history'}>
+                            <NavLink tag={Link} to={'/history'} activeClassName="active">
                                 History
                             </NavLink>
                         </NavItem>
