@@ -19,6 +19,13 @@ export class Tradebook extends React.Component {
         this.updateMarketBook()
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(prevProps.market !== this.props.market) {
+            this.updateMarketBook();
+        }
+
+    }
+
     updateMarketBook() {
         const {market} = this.props;
         this.setState({
@@ -29,6 +36,7 @@ export class Tradebook extends React.Component {
             axios.get(tradeURL + market.toUpperCase() + "/SELL"),
             axios.get(tradeURL + market.toUpperCase() + "/BUY")
         ]).then(([sell, buy]) => {
+
             this.setState({
                 sell: sell.data,
                 buy: buy.data,
@@ -45,6 +53,7 @@ export class Tradebook extends React.Component {
     }
 
     render() {
+        console.log("Tradebook rerender");
         const {loading, loadingFail, sell, buy} = this.state;
         if (loading) {
             return <Col md={12}><p>Loading market book...</p></Col>
