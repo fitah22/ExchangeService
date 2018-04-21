@@ -57,14 +57,15 @@ export class History extends React.Component {
 
 
     static renderReactTable(columns, data) {
-        return <ReactTable columns={columns} data={data} defaultPageSize={15} className="-striped -highlight"/>
+        return <ReactTable filterable columns={columns} data={data} defaultPageSize={15} className="-striped -highlight"
+                           defaultFilterMethod={(filter, row) => row[filter.id].startsWith(filter.value)}/>
     }
 }
 
 const APIEventColumns = [
     {
         Header: "Username",
-        accessor: "username"
+        accessor: "username",
     },
     {
         Header: "Autenticated",
