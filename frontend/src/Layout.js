@@ -50,7 +50,7 @@ export class Layout extends React.Component {
         axios.post(loginURL + "login", {}, config).then((response) => {
             this.setClientData(response.data);
             console.log("Client data set");
-        })
+        });
     }
 
     updatePassword(password) {

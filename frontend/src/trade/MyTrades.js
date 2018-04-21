@@ -1,8 +1,7 @@
 import * as React from 'react';
 import {TokenContext} from "../Contexts";
-import {Col, Table, Button} from 'reactstrap';
+import {Col, Table} from 'reactstrap';
 import PropTypes from "prop-types";
-import {Tradebook} from "./Tradebook";
 
 export class MyTrades extends React.Component {
 

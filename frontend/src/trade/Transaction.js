@@ -1,6 +1,16 @@
 import * as React from 'react';
 import {Form} from 'react-form';
-import {Button, Form as FormStyled, FormGroup, Label, Input, InputGroup, InputGroupAddon, Col} from 'reactstrap';
+import {
+    Button,
+    Form as FormStyled,
+    FormGroup,
+    Label,
+    Input,
+    InputGroup,
+    InputGroupAddon,
+    Col,
+    Alert
+} from 'reactstrap';
 import {TokenContext} from "../Contexts";
 import axios from "axios";
 import {tradeURL} from "../ServiceURLS";
@@ -13,8 +23,15 @@ export class Transaction extends React.Component {
         this.state = {
             amount: "",
             price: "",
-            currentMarketPrice: undefined
+            currentMarketPrice: undefined,
+            message: undefined,
+            messageVisible: false
         };
+        this.onDismissAlert = this.onDismissAlert.bind(this);
+    }
+
+    onDismissAlert() {
+        this.setState({messageVisible: false});
     }
 
     handleSubmit = (auth, updateWholeClientData, formapi) => {
@@ -33,17 +50,25 @@ export class Transaction extends React.Component {
             }
         };
         axios.post(tradeURL, order).then((response) => {
-            console.log("Trade OK");
+            this.setState({
+                message: "Trade OK.",
+                messageVisible: true
+            });
             updateWholeClientData();
         }).catch(() => {
-            formapi.setError("error", "Something went wrong. Try again later.");
+            this.setState({
+                message: "Something went wrong. Try again later.",
+                messageVisible: true
+            });
+
         });
     };
 
     handleNumberChange(event) {
         const {value, name} = event.currentTarget;
         this.setState({
-            [name]: Number(value)
+            [name]: Number(value),
+            messageVisible: false,
         });
     }
 
@@ -57,16 +82,16 @@ export class Transaction extends React.Component {
 
     renderBasedOnValue(context) {
         const {type, main, secondary} = this.props;
-        const {amount, price} = this.state;
+        const {amount, price, message, messageVisible} = this.state;
         const {auth, updateWholeClientData, client} = context;
 
-        let currentBalance = <p> </p>;
+        let currentBalance = <p></p>;
         if (client) {
             let curr = type.toUpperCase() === "BUY" ? secondary : main;
             let account = client.accounts.find(acc => acc.currency === curr);
-            if(account){
+            if (account) {
                 currentBalance = <p>Your current balance of {curr}: {account.balance},-</p>;
-            }else {
+            } else {
                 currentBalance = <p>You do not have an {curr} account.</p>;
             }
         }
@@ -113,8 +138,14 @@ export class Transaction extends React.Component {
                             </Col>
                         </FormGroup>
                         <Input hidden type="text" value={type} readOnly/>
-                        <div>{JSON.stringify(formApi.errors)}</div>
+
+                        <Alert color="info" isOpen={messageVisible} toggle={this.onDismissAlert}>
+                            {message}
+                        </Alert>
+
                         <Button color="primary" type="submit" block disabled={disabled}>{buttontext}</Button>
+
+
                     </FormStyled>
                 )
             }
