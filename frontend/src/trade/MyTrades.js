@@ -61,7 +61,7 @@ export class MyTrades extends React.Component {
                         <td>{order.total},-</td>
                         <td>
                             {order.remainingAmount > 0 &&
-                            <a href="#" onClick={(event) => this.onCancelOrder(event, order.id)}>
+                            <a href="" onClick={(event) => this.onCancelOrder(event, order.id)}>
                                 Cancel
                             </a>
                             }

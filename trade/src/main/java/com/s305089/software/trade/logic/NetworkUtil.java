@@ -27,14 +27,17 @@ public class NetworkUtil {
 
     public static boolean checkFunds(String username, String password, Order order) {
         String currency;
+        BigDecimal totalOrAmount;
 
         if (order.getTransactionType() == BUY) {
             currency = order.getMarket().getSecondCurrency(); //Ex: If we buy BTC, check that we have enough USD
+            totalOrAmount = order.getTotal();                   //therefore: for BUY we should reserve the total cost
         } else {
             currency = order.getMarket().getMainCurrency(); //EX: If we sell BTC, check that we have enough BTC
+            totalOrAmount = order.getAmount();              //therefore: for SELL we should reserve the amount
         }
 
-        String url = userURL + "/user/funds/" + currency + "/" + order.getTotal();
+        String url = userURL + "/user/funds/" + currency + "/" + totalOrAmount;
 
 
         HttpEntity<Object> requestBody = new HttpEntity<>(createHeadersAsUser(username, password));
@@ -42,19 +45,20 @@ public class NetworkUtil {
     }
 
 
-    public static boolean sendReserveOrder(String userId, Market market, BigDecimal total, TransactionType transactionType) {
+    public static boolean sendReserveOrder(Order order) {
+        Market market= order.getMarket();
         String url = userURL + "/reservefunds/";
         String currency;
-        if (transactionType == BUY) {
-            //url += "buy/";
+        BigDecimal totalOrAmount;
+        if (order.getTransactionType() == BUY) {
             currency = market.getSecondCurrency();
+            totalOrAmount = order.getTotal();
         } else {
-            //url += "sell/";
             currency = market.getMainCurrency();
+            totalOrAmount = order.getAmount();
         }
 
-
-        OrderDTO buyOrder = new OrderDTO(userId, currency, total);
+        OrderDTO buyOrder = new OrderDTO(order.getUserID(), currency, totalOrAmount);
         HttpHeaders header = createHeadersAsUser("tradeuser@s305089.com", "superSecretPassword");
 
 

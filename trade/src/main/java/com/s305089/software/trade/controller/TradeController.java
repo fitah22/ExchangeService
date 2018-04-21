@@ -54,7 +54,7 @@ public class TradeController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        boolean reserveOK = NetworkUtil.sendReserveOrder(order.getUserID(), order.getMarket(), order.getTotal(), order.getTransactionType());
+        boolean reserveOK = NetworkUtil.sendReserveOrder(order);
         if(!reserveOK) return   ResponseEntity.status(HttpStatus.FORBIDDEN).build();;
         order = orderDao.save(order);
 
