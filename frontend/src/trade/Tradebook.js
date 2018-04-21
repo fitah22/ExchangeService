@@ -53,8 +53,10 @@ export class Tradebook extends React.Component {
     }
 
     render() {
-        console.log("Tradebook rerender");
         const {loading, loadingFail, sell, buy} = this.state;
+        const buyAggregated = Tradebook.aggregateTradeData(buy);
+        const sellAggregated = Tradebook.aggregateTradeData(sell);
+
         if (loading) {
             return <Col md={12}><p>Loading market book...</p></Col>
         } else if (loadingFail) {
@@ -64,11 +66,11 @@ export class Tradebook extends React.Component {
                 <React.Fragment>
                     <Col md={6}>
                         <h4>Buy</h4>
-                        {Tradebook.getTable(buy)}
+                        {Tradebook.getTable(buyAggregated)}
                     </Col>
                     <Col md={6}>
                         <h4>Sell</h4>
-                        {Tradebook.getTable(sell)}
+                        {Tradebook.getTable(sellAggregated)}
                     </Col>
                 </React.Fragment>
             )
@@ -86,15 +88,34 @@ export class Tradebook extends React.Component {
             </thead>
             <tbody>
             {data.map((order, i) => {
+                debugger;
+                const total = order.price * order.amount;
                 return (
                     <tr key={i}>
                         <td>{order.price}</td>
-                        <td>{order.remainingAmount}</td>
-                        <td>{order.remaningTotal}</td>
+                        <td>{order.amount}</td>
+                        <td>{total}</td>
                     </tr>
                 );
             })}
             </tbody>
         </Table>
+    }
+
+    static aggregateTradeData(data) {
+        let result = [];
+        for(let order of data.filter(value => value.remaningTotal > 0)) {
+            let obj = result.find(value => value.price === order.price);
+            if (obj) {
+                obj.amount += order.remainingAmount;
+            } else {
+                obj = {
+                    price: order.price,
+                    amount: order.remainingAmount,
+                };
+                result.push(obj);
+            }
+        }
+        return result;
     }
 }
