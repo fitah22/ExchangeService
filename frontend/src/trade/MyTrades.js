@@ -43,10 +43,10 @@ export class MyTrades extends React.Component {
             <thead>
             <tr>
                 <td>Price</td>
-                <td>Traded Amount</td>
-                <td>Traded total</td>
-                <td>Total Amount</td>
-                <td>Total</td>
+                <td>Remaining amount</td>
+                <td>Traded amount</td>
+                <td>Total amount</td>
+                <td>Total price</td>
                 <td/>
             </tr>
             </thead>
@@ -55,8 +55,8 @@ export class MyTrades extends React.Component {
                 return (
                     <tr key={order.id}>
                         <td>{order.price},-</td>
+                        <td>{order.remainingAmount}</td>
                         <td>{order.tradedAmount}</td>
-                        <td>{order.tradedTotal},-</td>
                         <td>{order.amount}</td>
                         <td>{order.total},-</td>
                         <td>
