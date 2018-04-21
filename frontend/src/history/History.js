@@ -65,9 +65,9 @@ export class History extends React.Component {
             </thead>
             <tbody>
 
-            {data.map(value => {
+            {data.map((value, i) => {
                 const {username, authenticated, timestamp, apiEndpoint} = value;
-                return <tr>
+                return <tr key={i}>
                     <td>{username}</td>
                     <td>{authenticated ? "true" : "false"}</td>
                     <td>{new Date(timestamp).toUTCString()}</td>
@@ -93,9 +93,9 @@ export class History extends React.Component {
             <tbody>
 
 
-            {data.map(value => {
+            {data.map((value, i) => {
                 const {email, currency, timestamp, total, transactionType} = value;
-                return <tr>
+                return <tr key={i}>
                     <td>{email}</td>
                     <td>{currency}</td>
                     <td>{new Date(timestamp).toUTCString()}</td>
