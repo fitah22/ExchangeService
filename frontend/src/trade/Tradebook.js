@@ -63,7 +63,7 @@ export class Tradebook extends React.Component {
     }
 
     render() {
-        const {loading, loadingFail, sell, buy, historyOpen} = this.state;
+        const {loading, loadingFail, sell, buy} = this.state;
         const buyAggregated = Tradebook.aggregateTradeData(buy);
         const sellAggregated = Tradebook.aggregateTradeData(sell);
 
