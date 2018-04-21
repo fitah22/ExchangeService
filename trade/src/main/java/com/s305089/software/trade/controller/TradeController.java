@@ -11,7 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.*;
+
+import static com.s305089.software.trade.model.TransactionType.BUY;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -41,6 +44,10 @@ public class TradeController {
         return orderDao.findByMarketAndTransactionType(market, transactionType);
     }
 
+    @GetMapping(value = "/markets")
+    public List<Market> getMarkets() {
+        return Arrays.asList(Market.values());
+    }
 
     @PostMapping
     public ResponseEntity makeOrder(@RequestBody OrderDTO orderDTO) {
@@ -80,23 +87,30 @@ public class TradeController {
     public ResponseEntity cancelOrder(@RequestBody CancelOrderDTO cancelOrderDTO) {
         Optional<Order> orderOptional = orderDao.findById(cancelOrderDTO.id);
         if(orderOptional.isPresent()){
-            Order order = orderOptional.get();
-            PayRecord refund = new PayRecord(order, order.getRemainingAmount());
-            order.cancelOrder();
-            boolean payRecordOK = NetworkUtil.sendPayRecordsToUserService(Collections.singletonList(refund));
-            if(payRecordOK){
-                payRecordDao.save(refund);
-                return ResponseEntity.ok(orderDao.save(order));
-            }
-            return ResponseEntity.badRequest().build();
+            return handleCancel(orderOptional.get());
         }
         return ResponseEntity.notFound().build();
     }
 
+    private ResponseEntity handleCancel(Order order) {
+        BigDecimal totalOrAmount;
+        if(order.getTransactionType() == BUY) {
+            totalOrAmount = order.getRemaningTotal();
+        }else {
+            totalOrAmount = order.getRemainingAmount();
+        }
 
-    @GetMapping(value = "/markets")
-    public List<Market> getMarkets() {
-        return Arrays.asList(Market.values());
+        PayRecord refund = new PayRecord(order, totalOrAmount);
+        order.cancelOrder();
+
+
+        boolean payRecordOK = NetworkUtil.sendPayRecordsToUserService(Collections.singletonList(refund));
+        if(payRecordOK){
+            payRecordDao.save(refund);
+            return ResponseEntity.ok(orderDao.save(order));
+        }
+
+        return ResponseEntity.badRequest().build();
     }
 
 }
