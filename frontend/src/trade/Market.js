@@ -26,9 +26,7 @@ export class Market extends React.Component {
                 </Col>
             </Row>
             <Col md={12}>
-                <Row>
-                    <Tradebook market={currentMarket}/>
-                </Row>
+                <Tradebook market={currentMarket}/>
             </Col>
             <Row>
                 <Col md={12}>

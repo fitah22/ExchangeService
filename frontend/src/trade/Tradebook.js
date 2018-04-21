@@ -1,7 +1,8 @@
 import * as React from 'react';
 import {tradeURL} from "../ServiceURLS";
-import {Table, Col} from 'reactstrap';
+import {Row, Table, Col} from 'reactstrap';
 import axios from "axios/index";
+import {MyTrades} from "./MyTrades";
 
 export class Tradebook extends React.Component {
 
@@ -13,6 +14,8 @@ export class Tradebook extends React.Component {
             buy: [],
             sell: [],
         };
+        this.updateMarketBook = this.updateMarketBook.bind(this);
+        this.cancelOrder = this.cancelOrder.bind(this);
     }
 
     componentDidMount() {
@@ -20,7 +23,7 @@ export class Tradebook extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(prevProps.market !== this.props.market) {
+        if (prevProps.market !== this.props.market) {
             this.updateMarketBook();
         }
 
@@ -52,6 +55,13 @@ export class Tradebook extends React.Component {
 
     }
 
+    cancelOrder(orderid) {
+        axios.post(tradeURL+"cancel", {id: orderid})
+            .then(response => {
+               this.updateMarketBook()
+            });
+    }
+
     render() {
         const {loading, loadingFail, sell, buy} = this.state;
         const buyAggregated = Tradebook.aggregateTradeData(buy);
@@ -64,14 +74,21 @@ export class Tradebook extends React.Component {
         } else {
             return (
                 <React.Fragment>
-                    <Col md={6}>
-                        <h4>Buy</h4>
-                        {Tradebook.getTable(buyAggregated)}
-                    </Col>
-                    <Col md={6}>
-                        <h4>Sell</h4>
-                        {Tradebook.getTable(sellAggregated)}
-                    </Col>
+                    <Row>
+                        <MyTrades buy={buy} sell={sell} onCancel={this.cancelOrder}/>
+                    </Row>
+                    <hr/>
+                    <h3>Orders</h3>
+                    <Row>
+                        <Col md={6}>
+                            <h4>Buy</h4>
+                            {Tradebook.getTable(buyAggregated)}
+                        </Col>
+                        <Col md={6}>
+                            <h4>Sell</h4>
+                            {Tradebook.getTable(sellAggregated)}
+                        </Col>
+                    </Row>
                 </React.Fragment>
             )
         }
@@ -88,13 +105,12 @@ export class Tradebook extends React.Component {
             </thead>
             <tbody>
             {data.map((order, i) => {
-                debugger;
                 const total = order.price * order.amount;
                 return (
                     <tr key={i}>
-                        <td>{order.price}</td>
+                        <td>{order.price},-</td>
                         <td>{order.amount}</td>
-                        <td>{total}</td>
+                        <td>{total},-</td>
                     </tr>
                 );
             })}
@@ -104,7 +120,7 @@ export class Tradebook extends React.Component {
 
     static aggregateTradeData(data) {
         let result = [];
-        for(let order of data.filter(value => value.remaningTotal > 0)) {
+        for (let order of data.filter(value => value.remaningTotal > 0)) {
             let obj = result.find(value => value.price === order.price);
             if (obj) {
                 obj.amount += order.remainingAmount;

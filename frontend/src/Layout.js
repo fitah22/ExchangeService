@@ -76,6 +76,7 @@ export class Layout extends React.Component {
             auth: undefined,
             loginOpen: false,
             signupOpen: false,
+            client: undefined,
         });
     };
 

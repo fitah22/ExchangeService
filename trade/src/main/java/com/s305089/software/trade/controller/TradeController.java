@@ -11,9 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -75,6 +73,23 @@ public class TradeController {
             return ResponseEntity.ok().build();
         }
 
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping(value = "/cancel")
+    public ResponseEntity cancelOrder(@RequestBody CancelOrderDTO cancelOrderDTO) {
+        Optional<Order> orderOptional = orderDao.findById(cancelOrderDTO.id);
+        if(orderOptional.isPresent()){
+            Order order = orderOptional.get();
+            PayRecord refund = new PayRecord(order, order.getRemainingAmount());
+            order.cancelOrder();
+            boolean payRecordOK = NetworkUtil.sendPayRecordsToUserService(Collections.singletonList(refund));
+            if(payRecordOK){
+                payRecordDao.save(refund);
+                return ResponseEntity.ok(orderDao.save(order));
+            }
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.notFound().build();
     }
 

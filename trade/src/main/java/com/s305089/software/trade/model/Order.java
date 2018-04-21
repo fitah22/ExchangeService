@@ -1,5 +1,6 @@
 package com.s305089.software.trade.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.Entity;
@@ -42,7 +43,11 @@ public class Order {
         this.amount = new BigDecimal(amount);
         this.market = market;
         this.transactionType = transactionType;
-        this.active = true;
+    }
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public Integer getId() {
+        return id;
     }
 
     public String getUserID() {
@@ -111,5 +116,10 @@ public class Order {
 
     public void tradeRemaningAmount() {
         this.amountTraded = amount;
+    }
+
+    public void cancelOrder(){
+        active = false;
+        amount = amountTraded;
     }
 }

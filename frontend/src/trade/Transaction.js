@@ -18,7 +18,6 @@ export class Transaction extends React.Component {
     }
 
     handleSubmit = (auth, updateWholeClientData, formapi) => {
-        debugger;
         if (auth === undefined) return;
         const {amount, price} = this.state;
         const {type, main, secondary} = this.props;
@@ -33,7 +32,6 @@ export class Transaction extends React.Component {
                 transactionType: type.toUpperCase()
             }
         };
-        debugger;
         axios.post(tradeURL, order).then((response) => {
             console.log("Trade OK");
             updateWholeClientData();
