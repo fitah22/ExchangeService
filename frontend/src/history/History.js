@@ -3,6 +3,8 @@ import axios from "axios";
 import {Link} from "react-router-dom";
 import {historyURL} from "../ServiceURLS";
 import {Table, Col, Row} from 'reactstrap';
+import ReactTable from "react-table";
+import 'react-table/react-table.css'
 
 export class History extends React.Component {
 
@@ -39,11 +41,11 @@ export class History extends React.Component {
                 <Row>
                     <Col md={6}>
                         <h2>API events</h2>
-                        {History.renderAPIEventTable(apiMessages)}
+                        {History.renderReactTable(APIEventColumns, apiMessages)}
                     </Col>
                     <Col md={6}>
                         <h2>Trade events</h2>
-                        {History.renderTradeEventTable(payrecords)}
+                        {History.renderReactTable(tradeEventColumns, payrecords)}
                     </Col>
                 </Row>
             </React.Fragment>
@@ -53,58 +55,51 @@ export class History extends React.Component {
 
     }
 
-    static renderAPIEventTable(data) {
-        return <Table hover>
-            <thead>
-            <tr>
-                <th>Username</th>
-                <th>Autenticated</th>
-                <th>Endpoint</th>
-                <th>Timestamp</th>
-            </tr>
-            </thead>
-            <tbody>
 
-            {data.map((value, i) => {
-                const {username, authenticated, timestamp, apiEndpoint} = value;
-                return <tr key={i}>
-                    <td>{username}</td>
-                    <td>{authenticated ? "true" : "false"}</td>
-                    <td>{new Date(timestamp).toUTCString()}</td>
-                    <td>{apiEndpoint}</td>
-
-                </tr>
-            })}
-            </tbody>
-        </Table>
-    }
-
-    static renderTradeEventTable(data) {
-        return <Table hover>
-            <thead>
-            <tr>
-                <th>Username</th>
-                <th>Currency</th>
-                <th>Timestamp</th>
-                <th>Total</th>
-                <th>Type</th>
-            </tr>
-            </thead>
-            <tbody>
-
-
-            {data.map((value, i) => {
-                const {email, currency, timestamp, total, transactionType} = value;
-                return <tr key={i}>
-                    <td>{email}</td>
-                    <td>{currency}</td>
-                    <td>{new Date(timestamp).toUTCString()}</td>
-                    <td>{total}</td>
-                    <td>{transactionType}</td>
-
-                </tr>
-            })}
-            </tbody>
-        </Table>
+    static renderReactTable(columns, data) {
+        return <ReactTable columns={columns} data={data} defaultPageSize={15} className="-striped -highlight"/>
     }
 }
+
+const APIEventColumns = [
+    {
+        Header: "Username",
+        accessor: "username"
+    },
+    {
+        Header: "Autenticated",
+        accessor: "authenticated"
+    },
+    {
+        Header: "Timestamp",
+        accessor: "timestamp",
+        Cell: props => <span className='number'>{new Date(props.value).toUTCString()}</span>
+    },
+    {
+        Header: "Endpoint",
+        accessor: "apiEndpoint"
+    }
+];
+
+const tradeEventColumns = [
+    {
+        Header: "Username",
+        accessor: "email"
+    },
+    {
+        Header: "Currency",
+        accessor: "currency"
+    },
+    {
+        Header: "Timestamp",
+        accessor: "timestamp",
+        Cell: props => <span className='number'>{new Date(props.value).toUTCString()}</span>
+    },
+    {
+        Header: "Total",
+        accessor: "total"
+    }, {
+        Header: "Type",
+        accessor: "transactionType"
+    }
+];
