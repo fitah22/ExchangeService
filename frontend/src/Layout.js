@@ -3,6 +3,8 @@ import {NavigationMenu} from './home/NavigationMenu';
 import {TokenContext} from "./Contexts";
 import {Signup} from "./login/Signup";
 import {Login} from "./login/Login";
+import {loginURL} from "./ServiceURLS";
+import axios from "axios/index";
 
 
 export class Layout extends React.Component {
@@ -17,6 +19,7 @@ export class Layout extends React.Component {
             resetAuthParams: this.resetAuthParams.bind(this),
             client: undefined,
             setClientData: this.setClientData.bind(this),
+            updateWholeClientData: this.updateWholeClientData.bind(this),
             updatePassword: this.updatePassword.bind(this),
             updateAddress: this.updateAddress.bind(this),
             loginOpen: false,
@@ -38,8 +41,20 @@ export class Layout extends React.Component {
         });
     };
 
+    updateWholeClientData() {
+        const config = {
+            auth: this.state.auth
+        };
+
+        //Use login since it returns this user
+        axios.post(loginURL + "login", {}, config).then((response) => {
+            this.setClientData(response.data);
+            console.log("Client data set");
+        })
+    }
+
     updatePassword(password) {
-        const {auth}= this.state;
+        const {auth} = this.state;
         const newAuth = Object.assign({}, auth);
         newAuth.password = password;
         this.setState({
@@ -48,8 +63,8 @@ export class Layout extends React.Component {
     }
 
     updateAddress(address) {
-        const {client}= this.state;
-        const newClient =  Object.assign({}, client);
+        const {client} = this.state;
+        const newClient = Object.assign({}, client);
         newClient.address = address;
         this.setState({
             client: newClient

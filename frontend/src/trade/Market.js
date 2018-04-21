@@ -35,10 +35,10 @@ export class Market extends React.Component {
                     <hr/>
                     <Row>
                         <Col md={6}>
-                            <Transaction type={"Buy"} currency={main} unit={secondary}/>
+                            <Transaction type={"Buy"} main={main} secondary={secondary}/>
                         </Col>
                         <Col md={6}>
-                            <Transaction type={"Sell"} currency={main} unit={secondary}/>
+                            <Transaction type={"Sell"} main={main} secondary={secondary}/>
                         </Col>
                     </Row>
                 </Col>

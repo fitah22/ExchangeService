@@ -4,20 +4,19 @@ import {historyURL} from "../ServiceURLS";
 
 export class History extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state = {
-
-        };
+        this.state = {};
     }
 
     componentDidMount() {
-        axios.get(historyURL + "/")
+        axios.get(historyURL + "all").then(response => {
+            console.log(response);
+        })
     }
 
 
-
-    render(){
+    render() {
         return <p>Hello - </p>
     }
 

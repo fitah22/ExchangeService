@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Table, Row, Col} from 'reactstrap';
+import {Table } from 'reactstrap';
 import {loginURL, tradeURL, historyURL} from "../ServiceURLS";
 import {BounceLoader} from "react-spinners";
 import axios from "axios/index";
@@ -79,10 +79,10 @@ export class ServiceUp extends React.Component {
             return <BounceLoader size={25}/>
         }
         if (isUp === true) {
-            return <span>✅</span>;
+            return <span role="img" aria-label="Yes">✅</span>;
         }
 
-        return <span>❌</span>;
+        return <span role="img" aria-label="No">❌</span>;
 
     }
 }

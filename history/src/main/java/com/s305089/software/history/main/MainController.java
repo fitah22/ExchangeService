@@ -16,7 +16,8 @@ public class MainController {
     @Autowired
     PayRecordContoller payRecordContoller;
 
-    @GetMapping(value = "/all/")
+    //Return all user and payrecords. NOT errors.
+    @GetMapping(value = "/all")
     public UserPayRecordWrapper getAll(){
         return new UserPayRecordWrapper(userController.getAllUserEvents(), payRecordContoller.getAllUserEvents());
     }

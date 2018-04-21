@@ -17,11 +17,11 @@ export class Transaction extends React.Component {
         };
     }
 
-    handleSubmit = (auth, formapi) => {
+    handleSubmit = (auth, updateWholeClientData, formapi) => {
         debugger;
         if (auth === undefined) return;
         const {amount, price} = this.state;
-        const {type, currency, unit} = this.props;
+        const {type, main, secondary} = this.props;
         const order = {
             username: auth.username,
             password: auth.password,
@@ -29,14 +29,14 @@ export class Transaction extends React.Component {
                 userID: auth.username,
                 amount,
                 price,
-                market: `${currency}_${unit}`,
+                market: `${main}_${secondary}`,
                 transactionType: type.toUpperCase()
             }
         };
         debugger;
         axios.post(tradeURL, order).then((response) => {
-            debugger;
             console.log("Trade OK");
+            updateWholeClientData();
         }).catch(() => {
             formapi.setError("error", "Something went wrong. Try again later.");
         });
@@ -58,17 +58,31 @@ export class Transaction extends React.Component {
     }
 
     renderBasedOnValue(context) {
-        const {type, currency, unit} = this.props;
+        const {type, main, secondary} = this.props;
         const {amount, price} = this.state;
-        let disabled = context.auth === undefined;
-        let total = amount * price;
-        let buttontext = context.auth === undefined ? "Login to trade" : `${type} ${currency}`;
+        const {auth, updateWholeClientData, client} = context;
 
-        return <Form onSubmit={(values, e, formApi) => this.handleSubmit(context.auth, formApi)}>
+        let currentBalance = <p> </p>;
+        if (client) {
+            let curr = type.toUpperCase() === "BUY" ? secondary : main;
+            let account = client.accounts.find(acc => acc.currency === curr);
+            if(account){
+                currentBalance = <p>Your current balance of {curr}: {account.balance},-</p>;
+            }else {
+                currentBalance = <p>You do not have an {curr} account.</p>;
+            }
+        }
+
+        let disabled = auth === undefined;
+        let total = amount * price;
+        let buttontext = auth === undefined ? "Login to trade" : `${type} ${main}`;
+
+        return <Form onSubmit={(values, e, formApi) => this.handleSubmit(auth, updateWholeClientData, formApi)}>
             {
                 (formApi) => (
                     <FormStyled onSubmit={formApi.submitForm}>
-                        <h3>{type} {currency}</h3>
+                        <h3>{type} {main}</h3>
+                        {currentBalance}
                         <FormGroup row>
                             <Label htmlFor="price" sm={2}>Price:</Label>
                             <Col sm={10}>
@@ -76,7 +90,7 @@ export class Transaction extends React.Component {
                                     <Input defaultValue={this.state.price} placeholder="Price" min="0" type="number"
                                            name="price" field="price" step="0.01"
                                            onChange={(event) => this.handleNumberChange(event)}/>
-                                    <InputGroupAddon addonType="append">{unit}</InputGroupAddon>
+                                    <InputGroupAddon addonType="append">{secondary}</InputGroupAddon>
                                 </InputGroup>
                             </Col>
                         </FormGroup>
@@ -87,7 +101,7 @@ export class Transaction extends React.Component {
                                 <InputGroup>
                                     <Input placeholder="Amount" type="number" min="0" name="amount" field="amount"
                                            step="0.01" onChange={(event) => this.handleNumberChange(event)}/>
-                                    <InputGroupAddon addonType="append">{currency}</InputGroupAddon>
+                                    <InputGroupAddon addonType="append">{main}</InputGroupAddon>
                                 </InputGroup>
                             </Col>
                         </FormGroup>
@@ -96,7 +110,7 @@ export class Transaction extends React.Component {
                             <Col sm={10}>
                                 <InputGroup>
                                     <Input value={total} type="number" field="total" name="total" readOnly/>
-                                    <InputGroupAddon addonType="append">{unit}</InputGroupAddon>
+                                    <InputGroupAddon addonType="append">{secondary}</InputGroupAddon>
                                 </InputGroup>
                             </Col>
                         </FormGroup>
