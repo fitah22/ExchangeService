@@ -18,6 +18,7 @@ export class Layout extends React.Component {
             client: undefined,
             setClientData: this.setClientData.bind(this),
             updatePassword: this.updatePassword.bind(this),
+            updateAddress: this.updateAddress.bind(this),
             loginOpen: false,
             signupOpen: false,
             toggleLogin: this.toggleLogin.bind(this),
@@ -39,10 +40,19 @@ export class Layout extends React.Component {
 
     updatePassword(password) {
         const {auth}= this.state;
-        const newAuth = auth;
+        const newAuth = Object.assign({}, auth);
         newAuth.password = password;
         this.setState({
             auth: newAuth
+        });
+    }
+
+    updateAddress(address) {
+        const {client}= this.state;
+        const newClient =  Object.assign({}, client);
+        newClient.address = address;
+        this.setState({
+            client: newClient
         });
     }
 
@@ -55,7 +65,6 @@ export class Layout extends React.Component {
     };
 
     setClientData(clientdata) {
-        debugger;
         this.setState({
                 client: clientdata
             }

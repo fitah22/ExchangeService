@@ -31,11 +31,14 @@ export class Login extends React.Component {
                 password: values.password
             }
         };
-        axios.post(loginURL + "login", values, config).then((response) => {
+        axios.post(loginURL + "login", {},config).then((response) => {
             this.setParams(values.email, values.password);
             this.setClientData(response.data);
             console.log("Params and client data set");
-        }).catch(() => {
+        }).catch((err) => {
+            if (err.request) {
+                console.log("Unauthorized");
+            }
             formapi.setError("email", "Email already in use");
         }).finally(() => {
             this.setState({

@@ -17,6 +17,7 @@ export class Account extends React.Component {
         if (data) {
             return (
                 <div>
+                    <h3>Accounts</h3>
                     <p>Nr of accounts: {data.length}</p>
                     <Table striped>
                         <thead>

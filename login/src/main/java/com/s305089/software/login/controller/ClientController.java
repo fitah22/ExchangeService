@@ -2,12 +2,14 @@ package com.s305089.software.login.controller;
 
 import com.s305089.software.login.dao.ClientService;
 import com.s305089.software.login.model.Client;
+import com.s305089.software.login.model.SingleValueDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Objects;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -19,11 +21,14 @@ public class ClientController {
 
     //a. User can change their password
     @PatchMapping(value = "/user/password")
-    public ResponseEntity updatePassword(@RequestBody String password, Principal principal) {
+    public ResponseEntity updatePassword(@RequestBody SingleValueDTO password, Principal principal) {
+        Objects.requireNonNull(password);
+        if(password.value.trim().equals("")) return  ResponseEntity.notFound().build();
+
         String email = principal.getName();
         Client client = clientService.findByEmail(email);
         if (client != null) {
-            client.setPassword(password);
+            client.setPassword(password.value);
             return ResponseEntity.ok(clientService.save(client));
         }
         return ResponseEntity.notFound().build();
@@ -31,11 +36,11 @@ public class ClientController {
 
     //b. Address information update
     @PatchMapping(value = "/user/address")
-    public ResponseEntity updateAddress(@RequestBody String address, Principal principal) {
+    public ResponseEntity updateAddress(@RequestBody SingleValueDTO address, Principal principal) {
         String email = principal.getName();
         Client client = clientService.findByEmail(email);
         if (client != null) {
-            client.setAddress(address);
+            client.setAddress(address.value);
             return ResponseEntity.ok(clientService.saveWithoutPassword(client));
         }
         return ResponseEntity.notFound().build();

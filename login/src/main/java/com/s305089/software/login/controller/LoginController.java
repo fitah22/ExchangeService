@@ -11,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class LoginController {
@@ -23,9 +25,10 @@ public class LoginController {
     }
 
     @PostMapping(value = "/login")
-    public Client login(@RequestBody Client client){
-        //User is already authenticatet at this point.
-        return service.findByEmail(client.getEmail());
+    public Client login(Principal principal){
+        //User is already authenticated at this point.
+        String email = principal.getName();
+        return service.findByEmail(email);
         //Dummy method to check if username and password is correct.
     }
 
@@ -33,7 +36,7 @@ public class LoginController {
     public ResponseEntity<Client> signup(@RequestBody Client newClient) {
         if(newClient.getEmail() == null || newClient.getPassword() == null || newClient.getAddress() == null) {
             log.info("New signup is not accepted: {}", newClient);
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
         }
 
         Client client = service.findByEmail(newClient.getEmail());
@@ -46,10 +49,10 @@ public class LoginController {
             newClient.addAccount(usdAccount);
             newClient = service.save(newClient);
             log.info("New client has signed up: {}", newClient);
-            return new ResponseEntity<>(newClient, HttpStatus.OK);
+            return ResponseEntity.ok(newClient);
         }
         log.info("Client already exists: {}", client);
-        return new ResponseEntity<>(HttpStatus.CONFLICT);
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
     @RequestMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
