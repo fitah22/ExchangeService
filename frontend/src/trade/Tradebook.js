@@ -56,14 +56,14 @@ export class Tradebook extends React.Component {
     }
 
     cancelOrder(orderid) {
-        axios.post(tradeURL+"cancel", {id: orderid})
+        axios.post(tradeURL + "cancel", {id: orderid})
             .then(response => {
-               this.updateMarketBook()
+                this.updateMarketBook()
             });
     }
 
     render() {
-        const {loading, loadingFail, sell, buy} = this.state;
+        const {loading, loadingFail, sell, buy, historyOpen} = this.state;
         const buyAggregated = Tradebook.aggregateTradeData(buy);
         const sellAggregated = Tradebook.aggregateTradeData(sell);
 

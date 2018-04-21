@@ -33,8 +33,12 @@ export class Account extends React.Component {
                                 <td>{acc.balance}</td>
                                 <td>{acc.currency}</td>
                                 <td>
+                                    {/*
                                     <Button {...btnAttr} color="primary">Deposit</Button>
                                     <Button {...btnAttr} color="primary">Withdraw</Button>
+                                    */
+                                    }
+
                                 </td>
 
                             </tr>

@@ -25,9 +25,11 @@ export class Market extends React.Component {
                     <p>Current market price: 1 {main} = {currentMarketPrice} {secondary}</p>}
                 </Col>
             </Row>
-            <Col md={12}>
-                <Tradebook market={currentMarket}/>
-            </Col>
+            <Row>
+                <Col md={12}>
+                    <Tradebook market={currentMarket}/>
+                </Col>
+            </Row>
             <Row>
                 <Col md={12}>
                     <hr/>

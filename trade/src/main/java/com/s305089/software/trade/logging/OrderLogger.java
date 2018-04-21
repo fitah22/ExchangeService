@@ -12,16 +12,20 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Component
 public class OrderLogger {
 
     private static String url;
 
-    private static final Logger log = LogManager.getRootLogger();
+    private static final Logger log = LogManager.getLogger();
+    private static final ExecutorService executor = Executors.newFixedThreadPool(1);
 
     public static void logToLogService(Order order) {
-        new Thread(() -> sendLogmessage(order)).start();
+        executor.submit(() -> sendLogmessage(order));
     }
 
     private static void sendLogmessage(Order order) {
@@ -45,7 +49,7 @@ public class OrderLogger {
         }
     }
 
-    @Value("${userservice.url}")
+    @Value("${historyservice.url}")
     public void setUrl(String url) {
         OrderLogger.url = url;
     }

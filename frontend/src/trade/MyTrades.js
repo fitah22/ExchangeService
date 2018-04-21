@@ -1,15 +1,25 @@
 import * as React from 'react';
 import {TokenContext} from "../Contexts";
-import {Col, Table} from 'reactstrap';
+import {Row, Col, Table, Collapse, Button} from 'reactstrap';
 import PropTypes from "prop-types";
 
 export class MyTrades extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            open: true,
+        };
+
+        this.toggleCollapse = this.toggleCollapse.bind(this);
         this.onCancelOrder = this.onCancelOrder.bind(this);
     }
 
+    toggleCollapse() {
+        this.setState({
+            open: !this.state.open
+        });
+    }
 
     render() {
         return <TokenContext.Consumer>
@@ -20,17 +30,26 @@ export class MyTrades extends React.Component {
     renderBasedOnValue(auth) {
         if (auth) {
             const {buy, sell} = this.props;
+            const {open} = this.state;
             let myBuy = buy.filter(value => value.userID === auth.username);
             let mySell = sell.filter(value => value.userID === auth.username);
+            let text = open ? "Hide my orders" : "Show my orders";
             return <React.Fragment>
-                <Col md={6}>
-                    <h4>Your buy orders</h4>
-                    {this.renderMyOrderTable(myBuy)}
-                </Col>
-                <Col md={6}>
-                    <h4>Your sell orders</h4>
-                    {this.renderMyOrderTable(mySell)}
-                </Col>
+                <Button color="info" onClick={this.toggleCollapse} className={"ml-2 mb-2"}>{text}</Button>
+                <Collapse isOpen={open}>
+                    <Col md={12}>
+                        <Row>
+                            <Col md={6}>
+                                <h4>Your buy orders</h4>
+                                {this.renderMyOrderTable(myBuy)}
+                            </Col>
+                            <Col md={6}>
+                                <h4>Your sell orders</h4>
+                                {this.renderMyOrderTable(mySell)}
+                            </Col>
+                        </Row>
+                    </Col>
+                </Collapse>
             </React.Fragment>
 
         }
