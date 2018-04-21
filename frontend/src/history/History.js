@@ -69,7 +69,9 @@ const APIEventColumns = [
     },
     {
         Header: "Autenticated",
-        accessor: "authenticated"
+        accessor: "authenticated",
+        Cell: props => <span>{props.value ? "true" : "false"}</span>,
+        filterMethod: (filter, row) => String(row[filter.id]).startsWith(filter.value)
     },
     {
         Header: "Timestamp",
