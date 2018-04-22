@@ -7,8 +7,12 @@ import {Button, Form as FormStyled, FormGroup, Label, Modal, ModalHeader, ModalB
 
 
 const validate = value => ({
-    error: !value ? "Input must contain 'Hello World'" : null
+    error: !value ? "" : null
 });
+const validateNotEmpty = value => ({
+    error: value.trim.length === 0 ? "Illegal value. Only whitespace is not allowed." : null
+});
+
 
 export class Signup extends React.Component {
 
@@ -24,16 +28,16 @@ export class Signup extends React.Component {
 
     handleSubmit = (values, e, formapi) => {
         this.setState({
-            loading:true
+            loading: true
         });
         axios.post(loginURL + "signup", values).then(response => {
             this.setParams(values.email, values.password);
             this.setClientData(response.data);
         }).catch(error => {
-            formapi.setError("email", "Email already in use");
+            formapi.setError("email", "Email already in use, or the service may be done.");
         }).finally(() => {
             this.setState({
-                loading:false
+                loading: false
             });
         });
     };
@@ -54,26 +58,28 @@ export class Signup extends React.Component {
                                     <Label htmlFor="email">Email</Label>
                                     <Text field="email" placeholder="Email" validate={validate}
                                           required {...textStyle}/>
-                                    {form.errors && form.errors.email}
                                 </FormGroup>
                                 <FormGroup>
                                     <Label htmlFor="password">Password</Label>
                                     <Text field="password" type="password" placeholder="Password"
-                                          required {...textStyle}/>
+                                          required {...textStyle} validate={validateNotEmpty}/>
                                     {form.errors && form.errors.password}
                                 </FormGroup>
                                 <FormGroup>
                                     <Label htmlFor="address">Address</Label>
-                                    <Text field="address" placeholder="Address" required {...textStyle}/>
+                                    <Text field="address" placeholder="Address" required {...textStyle} validate={validateNotEmpty}/>
                                     {form.errors && form.errors.address}
                                 </FormGroup>
                                 <FormGroup>
                                     <Checkbox field="agreesToTerms" required/>
                                     <label htmlFor="agreesToTerms">Terms and conditions</label>
                                 </FormGroup>
-                                {this.state.loading && <Button color="primary" disabled={true}><SyncLoader size={10}/></Button>}
+                                {this.state.loading &&
+                                <Button color="primary" disabled={true}><SyncLoader size={10}/></Button>}
                                 {!this.state.loading && <Button color="primary" type="submit">Sign up</Button>}
                                 <Button color="secondary" className={"ml-1"} onClick={toggle}>Cancel</Button>
+
+                                <p>{form.errors && form.errors.email}</p>
                             </FormStyled>
                         )
                         }

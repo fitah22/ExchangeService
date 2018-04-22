@@ -6,8 +6,9 @@ import axios from "axios";
 import {loginURL} from "../ServiceURLS";
 
 
+//Need this so the form correctly updates state on change.
 const validate = value => ({
-    error: !value ? "Input must contain 'Hello World'" : null
+    error: !value ? "" : null
 });
 
 export class Login extends React.Component {
@@ -36,10 +37,7 @@ export class Login extends React.Component {
             this.setClientData(response.data);
             console.log("Params and client data set");
         }).catch((err) => {
-            if (err.request) {
-                console.log("Unauthorized");
-            }
-            formapi.setError("email", "Email already in use");
+            formapi.setError("email", "Wrong username or password, or the service may be done.");
         }).finally(() => {
             this.setState({
                 loading:false
@@ -73,7 +71,8 @@ export class Login extends React.Component {
                                     {this.state.loading && <Button color="primary" disabled={true}><SyncLoader size={10}/></Button>}
                                     {!this.state.loading && <Button color="primary" type="submit">Login</Button>}
                                     <Button color="secondary" className={"ml-1"} onClick={toggle}>Cancel</Button>
-                                    <div>{JSON.stringify(formApi.errors)}</div>
+
+                                    <p>{formApi.errors && formApi.errors.email}</p>
                                 </FormStyled>
                             )
                         }
