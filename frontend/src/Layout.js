@@ -1,20 +1,21 @@
 import * as React from 'react';
-import {NavigationMenu} from './home/NavigationMenu';
-import {TokenContext} from "./Contexts";
-import {Signup} from "./login/Signup";
-import {Login} from "./login/Login";
-import {loginURL} from "./ServiceURLS";
 import axios from "axios/index";
+import {Login} from "./login/Login";
+import {Signup} from "./login/Signup";
+import Cookies from 'universal-cookie';
+import {loginURL} from "./ServiceURLS";
+import {TokenContext} from "./Contexts";
+import {NavigationMenu} from './home/NavigationMenu';
 
+const cookies = new Cookies();
 
 export class Layout extends React.Component {
 
     constructor(props) {
         super(props);
 
-
         this.state = {
-            auth: undefined,
+            auth: cookies.get('auth'),
             setAuthParams: this.setAuthParams.bind(this),
             resetAuthParams: this.resetAuthParams.bind(this),
             client: undefined,
@@ -29,13 +30,22 @@ export class Layout extends React.Component {
         };
 
     }
+    componentDidMount(){
+        if(this.state.auth) {
+            console.log("Auth cookie saved. Now fetching its data");
+            this.updateWholeClientData();
+        }
+    }
 
     setAuthParams(username, password) {
+        const auth = {
+            username,
+            password
+        };
+        cookies.set('auth', auth);
+        console.log("cookie set");
         this.setState({
-            auth: {
-                username,
-                password
-            },
+            auth,
             loginOpen: false,
             signupOpen: false,
         });
@@ -50,13 +60,14 @@ export class Layout extends React.Component {
         axios.post(loginURL + "login", {}, config).then((response) => {
             this.setClientData(response.data);
             console.log("Client data set");
-        });
+        }).catch(() => cookies.remove('auth'));
     }
 
     updatePassword(password) {
         const {auth} = this.state;
         const newAuth = Object.assign({}, auth);
         newAuth.password = password;
+        cookies.set('auth', newAuth);
         this.setState({
             auth: newAuth
         });
@@ -78,6 +89,7 @@ export class Layout extends React.Component {
             signupOpen: false,
             client: undefined,
         });
+        cookies.remove('auth');
     };
 
     setClientData(clientdata) {

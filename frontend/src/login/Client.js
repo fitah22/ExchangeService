@@ -39,7 +39,10 @@ export class Client extends React.Component {
                 </div>
             )
         }
-        return <div></div>;
+        return <div>
+            <h1>User</h1>
+            <p>Service may be done.</p>
+        </div>;
     }
 
     renderPasswordFields() {

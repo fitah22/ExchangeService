@@ -13,7 +13,8 @@
     "react-scripts": "1.1.4",
     "react-spinners": "^0.3.2",
     "react-table": "^6.8.2",
-    "reactstrap": "^5.0.0"
+    "reactstrap": "^5.0.0",
+    "universal-cookie": "^2.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
