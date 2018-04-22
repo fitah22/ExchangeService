@@ -32,7 +32,7 @@ export class MarketList extends React.Component {
                         markets.map((market, i) => {
                             const style = market === currentMarket ? {"fontWeight": "bold"} : null;
                             const {main, secondary} = Market.getCurrenciesFromMarket(market);
-                            const price = prices === undefined ? "" : prices[i];
+                            const price = prices === undefined ? "-" : prices[i];
                             return <tr key={i} onClick={() => onClickRow(market)} style={style}>
                                 <td>{main}/{secondary}</td>
                                 <td>{price}</td>

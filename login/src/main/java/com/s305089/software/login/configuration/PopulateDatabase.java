@@ -23,24 +23,29 @@ public class PopulateDatabase {
 
     @EventListener(ApplicationReadyEvent.class)
     public void populateWithTestData() {
-        Client client = new Client();
-        client.setEmail("hello");
-        client.setPassword("123");
-        Account btcAccount = Account.newBTCAccount();
-        Account usdAccount = Account.newUSDAccount();
-        btcAccount.deposit(100);
-        usdAccount.deposit(100);
-        client.addAccount(btcAccount);
-        client.addAccount(usdAccount);
-        service.save(client);
-        log.info("Database is now populated with user 'hello'");
+        if (service.findByEmail("hello") == null) {
+            Client client = new Client();
+            client.setEmail("hello");
+            client.setPassword("123");
+            Account btcAccount = Account.newBTCAccount();
+            Account usdAccount = Account.newUSDAccount();
+            btcAccount.deposit(100);
+            usdAccount.deposit(100);
+            client.addAccount(btcAccount);
+            client.addAccount(usdAccount);
+            service.save(client);
+            log.info("Database is now populated with user 'hello'");
+        }
 
-        Client tradeModule = new Client();
-        tradeModule.setEmail("tradeuser@s305089.com");
-        tradeModule.setPassword("superSecretPassword");
-        tradeModule.setAddress("OsloMet P35");
-        service.save(tradeModule);
-        log.info("Database is now populated with user '{}'", tradeModule.getEmail());
+        if (service.findByEmail("tradeuser@s305089.com") == null) {
+
+            Client tradeModule = new Client();
+            tradeModule.setEmail("tradeuser@s305089.com");
+            tradeModule.setPassword("superSecretPassword");
+            tradeModule.setAddress("OsloMet P35");
+            service.save(tradeModule);
+            log.info("Database is now populated with user '{}'", tradeModule.getEmail());
+        }
     }
 
 }

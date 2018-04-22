@@ -76,7 +76,7 @@ const APIEventColumns = [
     {
         Header: "Timestamp",
         accessor: "timestamp",
-        Cell: props => <span className='number'>{new Date(props.value).toUTCString()}</span>
+        Cell: props => <span className='number'>{new Date(props.value).toLocaleString('no-NB', { timeZone: 'UTC' })}</span>
     },
     {
         Header: "Endpoint",
@@ -96,7 +96,7 @@ const tradeEventColumns = [
     {
         Header: "Timestamp",
         accessor: "timestamp",
-        Cell: props => <span className='number'>{new Date(props.value).toUTCString()}</span>
+        Cell: props => <span className='number'>{new Date(props.value).toLocaleString('no-NB', { timeZone: 'UTC' })}</span>
     },
     {
         Header: "Total",
