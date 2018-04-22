@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Table, Button} from 'reactstrap';
+import {Table} from 'reactstrap';
 
 
 export class Account extends React.Component {
@@ -13,7 +13,7 @@ export class Account extends React.Component {
 
     render() {
         const {data} = this.props;
-        const btnAttr = {className: "mr-2 mt-2"};
+        //const btnAttr = {className: "mr-2 mt-2"};
         if (data) {
             return (
                 <div>

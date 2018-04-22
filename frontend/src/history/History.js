@@ -2,7 +2,7 @@ import * as React from 'react';
 import axios from "axios";
 import {Link} from "react-router-dom";
 import {historyURL} from "../ServiceURLS";
-import {Table, Col, Row} from 'reactstrap';
+import {Col, Row} from 'reactstrap';
 import ReactTable from "react-table";
 import 'react-table/react-table.css'
 

@@ -34,7 +34,7 @@ export class Transaction extends React.Component {
         this.setState({messageVisible: false});
     }
 
-    handleSubmit = (auth, updateWholeClientData, formapi) => {
+    handleSubmit = (auth, updateWholeClientData, onUpdate, formapi) => {
         if (auth === undefined) return;
         const {amount, price} = this.state;
         const {type, main, secondary} = this.props;
@@ -55,6 +55,7 @@ export class Transaction extends React.Component {
                 messageVisible: true
             });
             updateWholeClientData();
+            onUpdate();
         }).catch(() => {
             this.setState({
                 message: "Something went wrong. Try again later.",
@@ -81,7 +82,7 @@ export class Transaction extends React.Component {
     }
 
     renderBasedOnValue(context) {
-        const {type, main, secondary} = this.props;
+        const {type, main, secondary, onUpdate} = this.props;
         const {amount, price, message, messageVisible} = this.state;
         const {auth, updateWholeClientData, client} = context;
 
@@ -100,7 +101,7 @@ export class Transaction extends React.Component {
         let total = amount * price;
         let buttontext = auth === undefined ? "Login to trade" : `${type} ${main}`;
 
-        return <Form onSubmit={(values, e, formApi) => this.handleSubmit(auth, updateWholeClientData, formApi)}>
+        return <Form onSubmit={(values, e, formApi) => this.handleSubmit(auth, updateWholeClientData, onUpdate, formApi)}>
             {
                 (formApi) => (
                     <FormStyled onSubmit={formApi.submitForm}>
