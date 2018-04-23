@@ -86,7 +86,25 @@ const APIEventColumns = [
         Header: "Autenticated",
         accessor: "authenticated",
         Cell: props => <span>{props.value ? "true" : "false"}</span>,
-        filterMethod: (filter, row) => String(row[filter.id]).startsWith(filter.value)
+        filterMethod: (filter, row) => {
+            if (filter.value === "all") {
+                return true;
+            }
+            if (filter.value === "false") {
+                return !row[filter.id];
+            }
+            return row[filter.id];
+        },
+        Filter: ({ filter, onChange }) =>
+            <select
+                onChange={event => onChange(event.target.value)}
+                style={{ width: "100%" }}
+                value={filter ? filter.value : "all"}
+            >
+                <option value="all">All</option>
+                <option value="true">True</option>
+                <option value="false">False</option>
+            </select>
     },
     {
         Header: "Timestamp",

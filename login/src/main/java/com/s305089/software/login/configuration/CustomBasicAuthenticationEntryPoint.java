@@ -29,7 +29,7 @@ public class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntr
 
         if (authException instanceof InsufficientAuthenticationException) {
             new Thread(() -> {
-                APIMessage apiMessage = new APIMessage("a", false, request.getServletPath());
+                APIMessage apiMessage = new APIMessage("CustomBasicAuthentication", false, request.getServletPath());
                 HistoryConnector.logToLogService(apiMessage, "/user");
             }).start();
         }
