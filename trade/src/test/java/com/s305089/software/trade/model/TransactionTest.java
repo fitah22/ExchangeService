@@ -42,9 +42,9 @@ public class TransactionTest {
         assertEquals("Kasper", actual.get(1).getUserID());
         assertEquals("Svergja", actual.get(2).getUserID());
 
-        assertEquals(1d, actual.get(0).getTradedTotal().doubleValue(), 0.0003);
-        assertEquals(2d, actual.get(1).getTradedTotal().doubleValue(), 0.0003);
-        assertEquals(3d, actual.get(2).getTradedTotal().doubleValue(), 0.0003);
+        assertEquals(15d, actual.get(0).getTradedTotal().doubleValue(), 0.0003);
+        assertEquals(30d, actual.get(1).getTradedTotal().doubleValue(), 0.0003);
+        assertEquals(45d, actual.get(2).getTradedTotal().doubleValue(), 0.0003);
 
     }
 }
