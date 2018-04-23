@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {Row, Table, Col} from 'reactstrap';
-import {MyTrades} from "./MyTrades";
 import PropTypes from "prop-types";
 
 export class Tradebook extends React.Component {

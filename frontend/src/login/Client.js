@@ -35,7 +35,6 @@ export class Client extends React.Component {
                     <h4>Change password</h4>
                     {this.renderPasswordFields()}
                     <Account data={data.accounts}/>
-
                 </div>
             )
         }

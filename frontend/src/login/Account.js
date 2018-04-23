@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Table} from 'reactstrap';
+import {UnclaimedAccounts} from "./UnclaimedAccounts";
 
 
 export class Account extends React.Component {
@@ -22,27 +23,29 @@ export class Account extends React.Component {
                     <Table striped>
                         <thead>
                         <tr>
-                            <th>Balance</th>
                             <th>Currency</th>
-                            <th/>
+                            <th>Balance</th>
+                            {/* <th/> */}
                         </tr>
                         </thead>
                         <tbody>
                         {data.map((acc, id) => {
                             return <tr key={id}>
-                                <td>{acc.balance}</td>
                                 <td>{acc.currency}</td>
+                                <td>{acc.balance}</td>
+                                {/*
                                 <td>
-                                    {/*
+
                                     <Button {...btnAttr} color="primary">Deposit</Button>
                                     <Button {...btnAttr} color="primary">Withdraw</Button>
-                                    */
-                                    }
 
                                 </td>
+*/
+                                }
 
                             </tr>
                         })}
+                        <UnclaimedAccounts/>
                         </tbody>
                     </Table>
                 </div>

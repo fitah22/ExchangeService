@@ -93,7 +93,7 @@ export class Transaction extends React.Component {
             if (account) {
                 currentBalance = <p>Your current balance of {curr}: {account.balance},-</p>;
             } else {
-                currentBalance = <p>You do not have an {curr} account.</p>;
+                currentBalance = <p>You do not have an {curr} account. Go to the user page to make an account.</p>;
             }
         }
 
@@ -101,7 +101,8 @@ export class Transaction extends React.Component {
         let total = amount * price;
         let buttontext = auth === undefined ? "Login to trade" : `${type} ${main}`;
 
-        return <Form onSubmit={(values, e, formApi) => this.handleSubmit(auth, updateWholeClientData, onUpdate, formApi)}>
+        return <Form
+            onSubmit={(values, e, formApi) => this.handleSubmit(auth, updateWholeClientData, onUpdate, formApi)}>
             {
                 (formApi) => (
                     <FormStyled onSubmit={formApi.submitForm}>

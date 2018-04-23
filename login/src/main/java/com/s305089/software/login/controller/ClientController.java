@@ -2,6 +2,7 @@ package com.s305089.software.login.controller;
 
 import com.s305089.software.login.dao.ClientService;
 import com.s305089.software.login.model.Client;
+import com.s305089.software.login.model.Currency;
 import com.s305089.software.login.model.SingleValueDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,6 +56,17 @@ public class ClientController {
             return ResponseEntity.ok(client.getAccounts());
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping(value = "user/newAccountAndClaim")
+    public ResponseEntity newAccountAndClaim(@RequestBody SingleValueDTO currencyDTO, Principal principal){
+        Currency currency = Currency.valueOf(currencyDTO.value);
+        return clientService.newAccountAndClaim(principal.getName(), currency, 50d);
+    }
+
+    @GetMapping(value = "currencies")
+    public ResponseEntity getCurrencies() {
+        return ResponseEntity.ok(Currency.values());
     }
 
 }

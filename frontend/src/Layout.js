@@ -20,6 +20,7 @@ export class Layout extends React.Component {
             resetAuthParams: this.resetAuthParams.bind(this),
             client: undefined,
             setClientData: this.setClientData.bind(this),
+            newAccountAndClaim: this.newAccountAndClaim.bind(this),
             updateWholeClientData: this.updateWholeClientData.bind(this),
             updatePassword: this.updatePassword.bind(this),
             updateAddress: this.updateAddress.bind(this),
@@ -98,6 +99,17 @@ export class Layout extends React.Component {
             }
         );
     };
+
+    newAccountAndClaim(currency) {
+        const config = {
+            auth: this.state.auth
+        };
+
+        axios.post(loginURL + "user/newAccountAndClaim", {value: currency}, config).then((response) => {
+            this.setClientData(response.data);
+            console.log("New account claimed.");
+        });
+    }
 
     toggleLogin() {
         this.setState({

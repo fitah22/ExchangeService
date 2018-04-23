@@ -25,7 +25,7 @@ public class Account {
     private Account() {
     }
 
-    public Account(Currency currency, long balance) {
+    public Account(Currency currency, double balance) {
         this.currency = currency;
         this.balance = new BigDecimal(balance);
     }
@@ -70,15 +70,15 @@ public class Account {
 
 
     public static Account newBTCAccount() {
-        return new Account(BTC, 0);
+        return new Account(BTC, 0d);
     }
 
     public static Account newUSDAccount() {
-        return new Account(USD, 0);
+        return new Account(USD, 0d);
     }
 
     public static Account newFromCurrency(Currency currency) {
-        return new Account(currency, 0);
+        return new Account(currency, 0d);
     }
 
 }

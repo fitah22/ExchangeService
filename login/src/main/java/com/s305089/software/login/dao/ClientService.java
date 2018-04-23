@@ -154,4 +154,19 @@ public class ClientService {
     public void deleteAll() {
         dao.deleteAll();
     }
+
+    public ResponseEntity newAccountAndClaim(String clientName, Currency currency, double claimAmount) {
+        Client client = dao.findByEmail(clientName);
+        if(client != null){
+            Optional<Account> acc = client.getAccounts().stream().filter(account -> account.getCurrency() == currency).findAny();
+            if(acc.isPresent()){
+                return  ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+            Account account = new Account(currency, claimAmount);
+            client.addAccount(account);
+            return ResponseEntity.ok(dao.save(client));
+
+        }
+        return ResponseEntity.notFound().build();
+    }
 }
