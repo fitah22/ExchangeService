@@ -17,7 +17,6 @@ export class History extends React.Component {
 
     componentDidMount() {
         axios.get(historyURL + "all").then(response => {
-            console.log(response);
             this.setState({
                 log: response.data
             })
@@ -26,8 +25,14 @@ export class History extends React.Component {
 
 
     render() {
+        const {email} = this.props;
+        let title =<h1>History</h1>;
+        if(email) {
+            title = <h3>History</h3>
+        }
+
         return <React.Fragment>
-            <h1>History</h1>
+            {title}
             {this.renderLog()}
 
         </React.Fragment>
@@ -36,15 +41,25 @@ export class History extends React.Component {
     renderLog() {
         const {log} = this.state;
         if (log) {
-            const {apiMessages, payrecords} = log;
+            let {apiMessages, payrecords} = log;
+            let APITitle = <h2>API events</h2>;
+            let tradeTitle = <h2>Trade events</h2>;
+            const {email} = this.props;
+            if(email) {
+                APITitle= <h4>User API overview</h4>;
+                tradeTitle = <h4>Buy/sell history</h4>;
+                apiMessages = apiMessages.filter(value => value.username === email);
+                payrecords = payrecords.filter(value => value.username === email);
+            }
+
             return <React.Fragment>
                 <Row>
                     <Col md={6}>
-                        <h2>API events</h2>
+                        {APITitle}
                         {History.renderReactTable(APIEventColumns, apiMessages)}
                     </Col>
                     <Col md={6}>
-                        <h2>Trade events</h2>
+                        {tradeTitle}
                         {History.renderReactTable(tradeEventColumns, payrecords)}
                     </Col>
                 </Row>
@@ -57,7 +72,7 @@ export class History extends React.Component {
 
 
     static renderReactTable(columns, data) {
-        return <ReactTable filterable columns={columns} data={data} defaultPageSize={15} className="-striped -highlight"
+        return <ReactTable filterable columns={columns} data={data} defaultPageSize={10} className="-striped -highlight"
                            defaultFilterMethod={(filter, row) => row[filter.id].startsWith(filter.value)}/>
     }
 }

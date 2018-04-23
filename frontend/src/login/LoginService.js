@@ -35,7 +35,7 @@ export class LoginService extends React.Component {
             <Row>
                 <Col md={12}>
                     <Client data={client} auth={auth} onUpdatePassword={updatePassword} onUpdateAddress={updateAddress}/>
-                    <button onClick={() => resetAuthParams()} className={"btn btn-md"}>Log out</button>
+                    <Button onClick={() => resetAuthParams()} color={"primary"} className={"mt-2 mb-4"}>Log out</Button>
 
                 </Col>
             </Row>

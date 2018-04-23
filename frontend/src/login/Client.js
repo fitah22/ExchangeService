@@ -3,6 +3,7 @@ import {Account} from "./Account";
 import {Button, Input, Form, FormGroup, Label, Col, UncontrolledAlert} from "reactstrap";
 import axios from "axios";
 import {loginURL} from "../ServiceURLS";
+import {History} from "../history/History";
 
 export class Client extends React.Component {
 
@@ -35,6 +36,7 @@ export class Client extends React.Component {
                     <h4>Change password</h4>
                     {this.renderPasswordFields()}
                     <Account data={data.accounts}/>
+                    <History email={data.email}/>
                 </div>
             )
         }
