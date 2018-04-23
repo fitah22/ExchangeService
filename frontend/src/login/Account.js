@@ -20,7 +20,7 @@ export class Account extends React.Component {
                 <div>
                     <h3>Accounts</h3>
                     <p>Nr of accounts: {data.length}</p>
-                    <Table striped>
+                    <Table hover>
                         <thead>
                         <tr>
                             <th>Currency</th>

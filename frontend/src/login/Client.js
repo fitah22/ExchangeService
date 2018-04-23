@@ -40,7 +40,7 @@ export class Client extends React.Component {
         }
         return <div>
             <h1>User</h1>
-            <p>Service may be done.</p>
+            <p>Service may be down. Please try again later</p>
         </div>;
     }
 

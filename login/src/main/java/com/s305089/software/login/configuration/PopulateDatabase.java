@@ -23,9 +23,9 @@ public class PopulateDatabase {
 
     @EventListener(ApplicationReadyEvent.class)
     public void populateWithTestData() {
-        if (service.findByEmail("hello") == null) {
+        if (service.findByEmail("hello@test.com") == null) {
             Client client = new Client();
-            client.setEmail("hello");
+            client.setEmail("hello@test.com");
             client.setPassword("123");
             Account btcAccount = Account.newBTCAccount();
             Account usdAccount = Account.newUSDAccount();

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +18,7 @@ public class Client {
     private Integer id;
     @NonNull
     @Column(unique = true)
+    @Email
     private String email;
     @NonNull
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
