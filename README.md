@@ -75,7 +75,39 @@ Run each of the `Main`-classes. Alternatively, IntelliJ has a "Run dashboard"  w
 
 ### Endpoints
 |Service |Endpoint | Method | Description |
-|--------|---------|--------|-------------|
+|--------|---------|------|-------------|
+|Login|          |        | |
+| | /all         | GET | For debugging: Get all clients/users. |
+| | /currencies  | GET | Get all currencies that is valid for an account. |
+| | /login       | POST | Check the authentication and returns this client/user. |
+| | /signup      | POST | Register new client, and return this. |
+| | /user/balance| GET  | Information about all accounts for the authenticated client. |
+| | /user/funds/{currency}/{amount} | GET | Check if the authenticated client has more or equal of the given amount. |
+| | /user/newAccountAndClaim | POST | Creates an new account with extra funds. |
+| | /user/password | PATCH | Updates the clients password.|
+| | /user/address  | PATCH | Updates the clients address.  |
+| | /payrecords    | POST | |
+| | /reservefunds  | POST | |
+|Trade|            |       | |
+| | /              |GET| Get all orders|
+| | /{market}      |GET| Get all orders that match the given market|
+| | /{market}/{transactionType} |GET| Get all orders that match the given market and transaction type|
+| | /markets        |GET| Get all markets that one can trade with.|
+| | /payrecords     |GET |Get all trade transfer history that is persisted in the database.|
+| | /               |POST|Create an new order.|
+| | /cancel        |POST|Cancel the given order, and refund the outstanding amount/total that has not been traded|
+|History |         |      |             |
+| | /all/{emali}   | GET  | Get all authentication and trade transfer history. Email optional |
+| | /order{email}         | GET    | Get all orders. Email optional.|
+| | /payrecords/{email}   | GET    | Get all trade transfer history. Email optional|
+| | /user/{email}| GET    | Get all authentication history. Email optional |
+| | /error       | GET    | Get all other errors |
+| | /order       | POST   | |
+| | /payrecords  | POST   | |
+| | /user        | POST   | |
+| | /error       | POST   | |
+
+
 
 
 
