@@ -44,9 +44,9 @@ public class PayRecord {
     @JsonProperty(value = "currency")
     public String getCurrency() {
         if(getTransactionType() == TransactionType.BUY){
-            return order.getMarket().getSecondCurrency();
-        }else{
             return order.getMarket().getMainCurrency();
+        }else{
+            return order.getMarket().getSecondCurrency();
         }
     }
 }
