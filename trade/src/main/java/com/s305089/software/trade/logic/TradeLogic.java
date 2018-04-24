@@ -27,6 +27,7 @@ public class TradeLogic {
                 .filter(order -> order.getTransactionType().isOpposit(orderToFullfill.getTransactionType()))
                 .filter(order -> order.getPrice().compareTo(orderToFullfill.getPrice()) == 0)
                 .filter(order -> order.getRemainingAmount().compareTo(new BigDecimal(0)) > 0)
+                .filter(order -> !order.getUserID().equals(orderToFullfill.getUserID()))
                 .collect(Collectors.toList());
 
         return makeTransaction(orderToFullfill, ordersThatCanBeTradedWith);
