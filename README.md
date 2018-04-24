@@ -7,7 +7,11 @@ Software Engineering - OsloMet
 1. Features
 2. Run on your local machine
 3. Implementation details
-    
+    - Endpoints
+    - Spring security
+    - Market
+    - Trade
+    - Order
 
 
 ## Features
@@ -76,40 +80,50 @@ Run each of the `Main`-classes. Alternatively, IntelliJ has a "Run dashboard"  w
 ### Endpoints
 |Service |Endpoint | Method | Description |
 |--------|---------|------|-------------|
-|Login|          |        | |
-| | /all         | GET | For debugging: Get all clients/users. |
-| | /currencies  | GET | Get all currencies that is valid for an account. |
-| | /login       | POST | Check the authentication and returns this client/user. |
-| | /signup      | POST | Register new client, and return this. |
-| | /user/balance| GET  | Information about all accounts for the authenticated client. |
-| | /user/funds/{currency}/{amount} | GET | Check if the authenticated client has more or equal of the given amount. |
-| | /user/newAccountAndClaim | POST | Creates an new account with extra funds. |
+|Login|            |      |      |
+| | /all                  | GET  | For debugging: Get all clients/users. |
+| | /currencies           | GET  | Get all currencies that is valid for an account. |
+| | /login                | POST | Check the authentication and returns this client/user. |
+| | /signup               | POST | Register new client, and return this. |
+| | /user/balance                   | GET  | Information about all accounts for the authenticated client. |
+| | /user/funds/{currency}/{amount} | GET  | Check if the authenticated client has more or equal of the given amount. |
+| | /user/newAccountAndClaim        | POST | Creates an new account with extra funds. |
 | | /user/password | PATCH | Updates the clients password.|
-| | /user/address  | PATCH | Updates the clients address.  |
-| | /payrecords    | POST | |
-| | /reservefunds  | POST | |
-|Trade|            |       | |
-| | /              |GET| Get all orders|
-| | /{market}      |GET| Get all orders that match the given market|
-| | /{market}/{transactionType} |GET| Get all orders that match the given market and transaction type|
-| | /markets        |GET| Get all markets that one can trade with.|
-| | /payrecords     |GET |Get all trade transfer history that is persisted in the database.|
-| | /               |POST|Create an new order.|
-| | /cancel        |POST|Cancel the given order, and refund the outstanding amount/total that has not been traded|
-|History |         |      |             |
-| | /all/{emali}   | GET  | Get all authentication and trade transfer history. Email optional |
-| | /order{email}         | GET    | Get all orders. Email optional.|
-| | /payrecords/{email}   | GET    | Get all trade transfer history. Email optional|
-| | /user/{email}| GET    | Get all authentication history. Email optional |
-| | /error       | GET    | Get all other errors |
-| | /order       | POST   | |
-| | /payrecords  | POST   | |
-| | /user        | POST   | |
-| | /error       | POST   | |
+| | /user/address  | PATCH | Updates the clients address. |
+| | /reservefunds  | POST  | Can only be called by the trade service. Reserves the funds from the clients account.|
+| | /payrecords    | POST  | Can only be called by the trade service. Execute the transfers that the payrecords/trade transfer represents.|
+|Trade |           |       | |
+| | /              | GET   | Get all orders|
+| | /{market}      | GET   | Get all orders that match the given market|
+| | /{market}/{transactionType} | GET | Get all orders that match the given market and transaction type|
+| | /markets       | GET  | Get all markets that one can trade with.|
+| | /payrecords    | GET  | Get all trade transfer history that is persisted in the database.|
+| | /              | POST | Create an new order.|
+| | /cancel        | POST | Cancel the given order, and refund the outstanding amount/total that has not been traded|
+|History |         |      |     |
+| | /all/{emali}   | GET     | Get all authentication and trade transfer history. Email optional |
+| | /order{email}  | GET     | Get all orders. Email optional.|
+| | /payrecords/{email} |GET | Get all trade transfer history. Email optional|
+| | /user/{email}  | GET     | Get all authentication history. Email optional |
+| | /error         | GET     | Get all other errors |
+| | /order         | POST    | |
+| | /payrecords    | POST    | |
+| | /user          | POST    | |
+| | /error         | POST    | |
 
 
 
+### Spring security
+Since I use react as frontend, instead of thymeleaf or jsp, I can no longer use models that i pass to the view.
+Instead the view gets it data from the endpoints listed above. 
+This arise the problem of how to authenticate the user. I considered several solutions,\
+like OAuth-based tokens, JSON web token (jwt) and BASIC authentication.
+I ended up using the latter.
 
+BASIC authentication was very simple to set up with Spring boot, as well as easy to manage from an frontend perspective.
+Each request contains an `auth`-header. That is an key where the value is the string `Basic` appended with an base64-encoded combination of the username and password.\
+`Axios`, as I used for HTTP requests  in frontend, also has built in support for this; all I had to provide was the username and password.
+   
 
 ### Market:
 A market is defined by a primary and secondary currency (also refered to as `main` and `secondary`)
