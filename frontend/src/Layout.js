@@ -127,6 +127,7 @@ export class Layout extends React.Component {
         const {auth, setAuthParams, setClientData, signupOpen, loginOpen, toggleSignup, toggleLogin, resetAuthParams} = this.state;
         return <TokenContext.Provider value={this.state}>
             <NavigationMenu isAuth={auth !== undefined}
+                            username={auth ? auth.username : undefined}
                             signup={toggleSignup}
                             login={toggleLogin}
                             restAuth={resetAuthParams}/>

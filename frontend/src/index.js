@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "./css/bootstrap.4.min.css";
+import "./css/custom.css";
 import {BrowserRouter} from 'react-router-dom';
 import {routes} from './routes';
 

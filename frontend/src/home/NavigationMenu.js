@@ -20,14 +20,14 @@ export class NavigationMenu extends React.Component {
     }
 
     render() {
+        const {username} = this.props;
         return <div>
             <Navbar expand="md" color="dark" dark>
                 <NavbarBrand tag={Link} to="/">Final project</NavbarBrand>
                 <div className='clearfix'/>
-                <NavbarToggler  onClick={this.toggleNavbar} className="mr-2" />
+                <NavbarToggler onClick={this.toggleNavbar} className="mr-2"/>
                 <Collapse isOpen={!this.state.collapsed} navbar>
                     <Nav navbar>
-
                         <NavItem>
                             <NavLink tag={Link} to={"/"} exact activeClassName="active">
                                 Home
@@ -48,6 +48,11 @@ export class NavigationMenu extends React.Component {
                                 History
                             </NavLink>
                         </NavItem>
+                        {username &&
+                        <li>
+                            <span className={"nav-link username ml-1 mr-1"}>Hello: {username}!</span>
+                        </li>
+                        }
                         {this.renderLogin()}
                     </Nav>
                 </Collapse>
