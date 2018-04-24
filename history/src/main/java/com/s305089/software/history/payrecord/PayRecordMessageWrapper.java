@@ -2,7 +2,7 @@ package com.s305089.software.history.payrecord;
 
 import java.util.List;
 
-class PayRecordMessageWrapper {
+public class PayRecordMessageWrapper {
     private List<PayRecordMessage> payRecords;
 
     public List<PayRecordMessage> getPayRecords() {

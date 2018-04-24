@@ -23,10 +23,20 @@ public class TradeLogicTest {
         Order order1 = new Order("John", 15d, 1d, BTC_USD, SELL);
         Order order2 = new Order("Kasper", 15d, 2.5d, BTC_USD, SELL);
         Order order3 = new Order("Svergja", 15d, 3d, BTC_USD, BUY);
+        Order order4 = new Order("Svergja", 1d, 1d, BTC_USD, BUY);
 
         activeOrders.add(order1);
         activeOrders.add(order2);
-        activeOrders.add(order3);
+        activeOrders.add(order4);
+    }
+
+    @Test
+    public void should_be_non_if_same_user() {
+        Order toFulfill = new Order("Svergja", 1d, 1d, BTC_USD, SELL);
+        Transaction transaction = TradeLogic.performTransaction(toFulfill, activeOrders);
+        List<Order> allOrders = transaction.getAllOrders();
+        assertEquals(1, allOrders.size());
+        assertEquals(toFulfill, allOrders.get(0));
     }
 
     @Test
