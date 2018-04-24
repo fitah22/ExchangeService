@@ -42,11 +42,11 @@ export class MyTrades extends React.Component {
                 <Collapse isOpen={open}>
                     <Col md={12}>
                         <Row>
-                            <Col md={6}>
+                            <Col md={12} lg={12} xl={6}>
                                 <h4>Your buy orders</h4>
                                 {this.renderMyOrderTable(myBuy, updateClientData)}
                             </Col>
-                            <Col md={6}>
+                            <Col md={12} lg={12} xl={6}>
                                 <h4>Your sell orders</h4>
                                 {this.renderMyOrderTable(mySell, updateClientData)}
                             </Col>

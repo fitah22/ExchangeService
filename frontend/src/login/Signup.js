@@ -5,12 +5,15 @@ import {SyncLoader} from "react-spinners";
 import {loginURL} from "../ServiceURLS";
 import {Button, Form as FormStyled, FormGroup, Label, Modal, ModalHeader, ModalBody} from 'reactstrap';
 
+//https://stackoverflow.com/a/18964976
+const regexFilter = /^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 
-const validate = value => ({
-    error: !value ? "" : null
+const validateEmail = value => ({
+    error: !regexFilter.test(value) ? "Email format is not valid." : null
 });
-const validateNotEmpty = value => ({
-    error: value.trim.length === 0 ? "Illegal value. Only whitespace is not allowed." : null
+
+const validateNotEmpty = (value = "") => ({
+    error: value.trim().length === 0 ? "Illegal value. Only whitespace is not allowed." : null
 });
 
 
@@ -34,7 +37,7 @@ export class Signup extends React.Component {
             this.setParams(values.email, values.password);
             this.setClientData(response.data);
         }).catch(error => {
-            formapi.setError("email", "Email already in use, or the service may be done.");
+            formapi.setError("error", "Email already in use, or the service may be done.");
         }).finally(() => {
             this.setState({
                 loading: false
@@ -56,7 +59,7 @@ export class Signup extends React.Component {
                             <FormStyled onSubmit={form.submitForm}>
                                 <FormGroup>
                                     <Label htmlFor="email">Email</Label>
-                                    <Text field="email" placeholder="Email" validate={validate}
+                                    <Text field="email" placeholder="Email" validate={validateEmail}
                                           required {...textStyle}/>
                                 </FormGroup>
                                 <FormGroup>
@@ -67,7 +70,8 @@ export class Signup extends React.Component {
                                 </FormGroup>
                                 <FormGroup>
                                     <Label htmlFor="address">Address</Label>
-                                    <Text field="address" placeholder="Address" required {...textStyle} validate={validateNotEmpty}/>
+                                    <Text field="address" placeholder="Address" required {...textStyle}
+                                          validate={validateNotEmpty}/>
                                     {form.errors && form.errors.address}
                                 </FormGroup>
                                 <FormGroup>
